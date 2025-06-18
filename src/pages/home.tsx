@@ -1,7 +1,11 @@
-import React from "react";
+import Project from "@/components/projects/project";
 
 function HomePage() {
-  return <div>Hello</div>;
+  return (
+    <div className="p-4">
+      <Project />
+    </div>
+  );
 }
 
 export default HomePage;

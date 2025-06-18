@@ -169,7 +169,7 @@ const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
 }) => {
   return (
     <Button
-      className={cn("gap-2", className)}
+      className={cn("gap-2 cursor-pointer", className)}
       type={"submit"}
       disabled={loading}
       {...rest}

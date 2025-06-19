@@ -14,6 +14,7 @@ export type IUser = {
 export type IProject = {
   _id: string;
   title: string;
+  slug: string;
   creator: Pick<IUser, "_id" | "fullName" | "email">;
   status: boolean;
   createdAt?: Date;

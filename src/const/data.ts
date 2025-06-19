@@ -9,6 +9,7 @@ export const projects: IProject[] = [
   {
     _id: "1",
     title: "LMS Platform Development",
+    slug: "lms-platform",
     creator: {
       _id: "u1",
       fullName: "Alice Johnson",
@@ -21,6 +22,7 @@ export const projects: IProject[] = [
   {
     _id: "2",
     title: "E-commerce Site Redesign",
+    slug: "e-commerce-site",
     creator: {
       _id: "u2",
       fullName: "Bob Smith",
@@ -33,6 +35,7 @@ export const projects: IProject[] = [
   {
     _id: "3",
     title: "Mobile App for Event Booking",
+    slug: "event-booking-app",
     creator: {
       _id: "u3",
       fullName: "Carol Davis",
@@ -45,6 +48,7 @@ export const projects: IProject[] = [
   {
     _id: "4",
     title: "Company Internal Dashboard",
+    slug: "company-dashboard",
     creator: {
       _id: "u4",
       fullName: "David Wilson",
@@ -71,6 +75,7 @@ export const tasks: ITask[] = [
     category: {
       _id: "p1",
       title: "Admin Panel Revamp",
+      slug: "admin-panel",
       creator: {
         _id: "u1",
         fullName: "Alice Johnson",
@@ -103,6 +108,7 @@ export const tasks: ITask[] = [
     category: {
       _id: "p2",
       title: "E-Commerce Backend",
+      slug: "e-commerce-backend",
       creator: {
         _id: "u2",
         fullName: "Bob Smith",
@@ -130,6 +136,7 @@ export const tasks: ITask[] = [
     category: {
       _id: "p2",
       title: "E-Commerce Backend",
+      slug: "e-commerce-backend",
       creator: {
         _id: "u2",
         fullName: "Bob Smith",
@@ -161,6 +168,7 @@ export const tasks: ITask[] = [
     category: {
       _id: "p1",
       title: "Admin Panel Revamp",
+      slug: "admin-panel",
       creator: {
         _id: "u1",
         fullName: "Alice Johnson",

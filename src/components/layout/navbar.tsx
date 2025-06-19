@@ -13,8 +13,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router";
+import CreateAndUpdateProject from "../projects/create-and-update-project";
+import CreateAndUpdateTask from "../tasks/create-and-update-task";
 function Navbar() {
   const { open, isMobile } = useSidebar();
+  const pathname = useLocation().pathname;
   return (
     <div
       style={{
@@ -26,9 +30,23 @@ function Navbar() {
     >
       <SidebarTrigger />
       <div className="flex items-center gap-5">
-        <Button>
-          <Plus /> New Task
-        </Button>
+        {pathname === "/dashboard" || pathname === "/dashboard/projects" ? (
+          <CreateAndUpdateProject
+            trigger={
+              <Button>
+                <Plus /> New Project
+              </Button>
+            }
+          />
+        ) : (
+          <CreateAndUpdateTask
+            trigger={
+              <Button>
+                <Plus /> New Task
+              </Button>
+            }
+          />
+        )}
         <Popover>
           <PopoverTrigger asChild className="cursor-pointer">
             <div className="flex items-center gap-2">

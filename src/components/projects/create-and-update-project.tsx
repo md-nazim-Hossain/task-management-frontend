@@ -19,6 +19,8 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
@@ -39,8 +41,11 @@ function CreateAndUpdateProject({ trigger }: Props) {
         {trigger}
       </DialogTrigger>
       <DialogContent>
+        <DialogHeader className="border-b pb-4">
+          <DialogTitle>Create New Project</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="title"

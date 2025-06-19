@@ -9,7 +9,7 @@ function DashboardLayout() {
       <AppSidebar />
       <main className="bg-background">
         <Navbar />
-        <div className="mt-[60px]">
+        <div className="mt-[60px] p-4">
           <Outlet />
         </div>
       </main>

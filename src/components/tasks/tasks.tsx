@@ -10,7 +10,7 @@ function Tasks({ tasks, className }: Props) {
   return (
     <div className={cn("flex gap-2", className)}>
       {tasks.map((task, index) => (
-        <Task task={task} id={index?.toString() + task.title} key={index} />
+        <Task task={task} key={index} />
       ))}
     </div>
   );

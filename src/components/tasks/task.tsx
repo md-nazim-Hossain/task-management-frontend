@@ -6,18 +6,11 @@ import TaskPriority from "./task-priority";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 type Props = {
   task: ITask;
-  id: string;
 };
-function Task({ task, id }: Props) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id,
-    });
-
+function Task({ task }: Props) {
   const status =
     task?.status === ENUM_TASK_STATUS.IN_PROGRESS
       ? "progress"
@@ -25,28 +18,11 @@ function Task({ task, id }: Props) {
       ? "todo"
       : "success";
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        zIndex: 1,
-      }
-    : undefined;
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
       className={cn(
-        "border bg-background rounded-md p-4 min-w-[324px] space-y-4 cursor-grab",
-        {
-          "cursor-grabbing": isDragging,
-        }
+        "border bg-background rounded-md p-4 min-w-[324px] space-y-4"
       )}
-      role="button"
-      tabIndex={0}
-      aria-roledescription="draggable"
-      aria-describedby={`DndContext-${id}`}
     >
       <Typography variant={"h5"}>{task?.title}</Typography>
       <div className="grid grid-cols-2 gap-4">

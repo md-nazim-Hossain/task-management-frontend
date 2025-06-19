@@ -3,10 +3,14 @@ import { Typography } from "@/components/ui/typography";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
 import avatar from "@/assets/images/avatar.png";
 import TaskPriority from "./task-priority";
-import { Calendar } from "lucide-react";
+import { Calendar, Edit, EllipsisVertical, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import CreateAndUpdateTask from "./create-and-update-task";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import AlertModal from "../shared/alert-modal";
 type Props = {
   task: ITask;
 };
@@ -24,7 +28,36 @@ function Task({ task }: Props) {
         "border bg-background rounded-md p-4 min-w-[324px] space-y-4"
       )}
     >
-      <Typography variant={"h5"}>{task?.title}</Typography>
+      <div className="flex items-center justify-between gap-3">
+        <Typography variant={"h5"}>{task?.title}</Typography>
+        <Popover>
+          <PopoverTrigger className="p-1 cursor-pointer">
+            <EllipsisVertical size={16} />
+          </PopoverTrigger>
+          <PopoverContent align="end" className="p-1 w-44">
+            <CreateAndUpdateTask
+              trigger={
+                <Button
+                  variant={"transparent"}
+                  className="w-full rounded justify-start font-normal"
+                >
+                  <Edit /> Edit Task
+                </Button>
+              }
+            />
+            <AlertModal
+              trigger={
+                <Button
+                  variant={"transparent"}
+                  className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
+                >
+                  <Trash2 /> Delete Task
+                </Button>
+              }
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1 flex-1">
           <Typography variant={"muted"}>People</Typography>

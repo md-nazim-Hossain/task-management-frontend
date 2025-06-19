@@ -22,6 +22,30 @@ const createAndUpdateTaskSchema = z.object({
   attachment: z.instanceof(File).optional(),
 });
 
+const createAndUpdateGroupSchema = z.object({
+  title: z.string().min(3, "Name must be at least 3 characters long"),
+  description: z.string().optional(),
+  image: z.instanceof(File).optional(),
+  status: z.boolean().default(true).optional(),
+  members: z.array(z.string()).optional(),
+});
+
+const addAndUpdateUserSchema = z
+  .object({
+    fullName: z.string().min(3, "Name must be at least 3 characters long"),
+    email: z.string().email(),
+    status: z.boolean().default(true).optional(),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    profileImage: z.instanceof(File).optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 export type ILoginSchema = z.infer<typeof loginSchema>;
 export type ICreateAndUpdateProjectSchema = z.infer<
   typeof createAndUpdateProjectSchema
@@ -29,4 +53,14 @@ export type ICreateAndUpdateProjectSchema = z.infer<
 export type ICreateAndUpdateTaskSchema = z.infer<
   typeof createAndUpdateTaskSchema
 >;
-export { loginSchema, createAndUpdateProjectSchema, createAndUpdateTaskSchema };
+export type ICreateAndUpdateGroupSchema = z.infer<
+  typeof createAndUpdateGroupSchema
+>;
+export type IAddAndUpdateUserSchema = z.infer<typeof addAndUpdateUserSchema>;
+export {
+  loginSchema,
+  createAndUpdateProjectSchema,
+  createAndUpdateTaskSchema,
+  createAndUpdateGroupSchema,
+  addAndUpdateUserSchema,
+};

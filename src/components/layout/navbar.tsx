@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "react-router";
 import CreateAndUpdateProject from "../projects/create-and-update-project";
 import CreateAndUpdateTask from "../tasks/create-and-update-task";
+import CreateAndUpdateGroup from "../groups/create-and-update-group";
+import CreateAndUpdateUser from "../users/create-and-update-user";
 function Navbar() {
   const { open, isMobile } = useSidebar();
   const pathname = useLocation().pathname;
@@ -30,19 +32,40 @@ function Navbar() {
     >
       <SidebarTrigger />
       <div className="flex items-center gap-5">
-        {pathname === "/dashboard" || pathname === "/dashboard/projects" ? (
-          <CreateAndUpdateProject
+        {pathname === "/dashboard" ||
+          (pathname === "/dashboard/projects" && (
+            <CreateAndUpdateProject
+              trigger={
+                <Button>
+                  <Plus /> New Project
+                </Button>
+              }
+            />
+          ))}
+        {pathname === "/dashboard/projects/:projectId" ||
+          (pathname === "/dashboard/my-tasks" && (
+            <CreateAndUpdateTask
+              trigger={
+                <Button>
+                  <Plus /> New Task
+                </Button>
+              }
+            />
+          ))}
+        {pathname === "/dashboard/groups" && (
+          <CreateAndUpdateGroup
             trigger={
               <Button>
-                <Plus /> New Project
+                <Plus /> New Group
               </Button>
             }
           />
-        ) : (
-          <CreateAndUpdateTask
+        )}
+        {pathname === "/dashboard/users" && (
+          <CreateAndUpdateUser
             trigger={
               <Button>
-                <Plus /> New Task
+                <Plus /> Add User
               </Button>
             }
           />

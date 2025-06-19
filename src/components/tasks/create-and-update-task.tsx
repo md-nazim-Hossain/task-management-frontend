@@ -100,7 +100,7 @@ function CreateAndUpdateTask({ trigger }: Props) {
                 name="priority"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Select Priority</FormLabel>
+                    <FormLabel> Priority</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -161,7 +161,7 @@ function CreateAndUpdateTask({ trigger }: Props) {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Select Category</FormLabel>
+                    <FormLabel> Category</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}

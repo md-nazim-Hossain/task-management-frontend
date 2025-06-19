@@ -1,4 +1,4 @@
-import { ENUM_TASK_PRIORITY, type ITask } from "@/types";
+import { ENUM_TASK_PRIORITY, ENUM_TASK_STATUS, type ITask } from "@/types";
 import { Typography } from "@/components/ui/typography";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
 import avatar from "@/assets/images/avatar.png";
@@ -6,13 +6,49 @@ import TaskPriority from "./task-priority";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useDraggable } from "@dnd-kit/core";
+import { cn } from "@/lib/utils";
 type Props = {
-  task?: ITask;
+  task: ITask;
+  id: string;
 };
-function Task({ task }: Props) {
+function Task({ task, id }: Props) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id,
+    });
+
+  const status =
+    task?.status === ENUM_TASK_STATUS.IN_PROGRESS
+      ? "progress"
+      : task?.status === ENUM_TASK_STATUS.TODO
+      ? "todo"
+      : "success";
+
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        zIndex: 1,
+      }
+    : undefined;
   return (
-    <div className="border cursor-grab bg-background rounded-md p-4 min-w-[324px] space-y-4">
-      <Typography variant={"h5"}>Requirement Analysis</Typography>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={cn(
+        "border bg-background rounded-md p-4 min-w-[324px] space-y-4 cursor-grab",
+        {
+          "cursor-grabbing": isDragging,
+        }
+      )}
+      role="button"
+      tabIndex={0}
+      aria-roledescription="draggable"
+      aria-describedby={`DndContext-${id}`}
+    >
+      <Typography variant={"h5"}>{task?.title}</Typography>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1 flex-1">
           <Typography variant={"muted"}>People</Typography>
@@ -23,23 +59,29 @@ function Task({ task }: Props) {
               name="Akram Khan"
               src={avatar}
             />
-            <Typography variant={"xsmall"}>Akram Khan</Typography>
+            <Typography variant={"xsmall"}>
+              {task?.creator?.fullName}
+            </Typography>
           </div>
         </div>
         <div className="space-y-1 w-[40%]">
           <Typography variant={"muted"}>Priority</Typography>
-          <TaskPriority priority={ENUM_TASK_PRIORITY.HIGH} />
+          <TaskPriority priority={task?.priority as ENUM_TASK_PRIORITY} />
         </div>
 
         <div>
           <Typography variant={"muted"}>Status</Typography>
-          <Badge variant={"progress"}>In Progress</Badge>
+          <Badge className="capitalize" variant={status}>
+            {task?.status}
+          </Badge>
         </div>
         <div>
           <Typography variant={"muted"}>Deadline</Typography>
           <div className="bg-red-100 px-2 py-1 rounded flex items-center gap-2">
             <Calendar size={16} />
-            <Typography variant={"xsmall"}>01/01/2023</Typography>
+            <Typography variant={"xsmall"}>
+              {new Date(task?.dueDate).toDateString()}
+            </Typography>
           </div>
         </div>
       </div>

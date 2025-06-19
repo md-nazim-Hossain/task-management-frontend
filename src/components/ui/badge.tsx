@@ -19,6 +19,7 @@ const badgeVariants = cva(
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
         success: "bg-green-100 text-green-400",
         progress: "bg-blue-100 text-blue-400",
+        todo: "bg-gray-100 text-gray-500",
       },
     },
     defaultVariants: {

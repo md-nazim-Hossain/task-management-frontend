@@ -1,27 +1,44 @@
-import type { IProject, ITask } from "@/types";
+import { ENUM_TASK_STATUS, type IProject, type ITask } from "@/types";
 import Tasks from "@/components/tasks/tasks";
 import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
 import { Plus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useDroppable } from "@dnd-kit/core";
 
 type Props = {
   className?: string;
-  project?: IProject;
-  tasks?: Array<ITask>;
+  project: IProject;
+  tasks: Array<ITask>;
+  id: string;
 };
-function Project({ className, tasks }: Props) {
+function Project({ className, tasks, id, project }: Props) {
+  const { setNodeRef } = useDroppable({
+    id,
+  });
   return (
-    <div className={cn("p-3 rounded-md bg-blue-100 space-y-4", className)}>
+    <div
+      ref={setNodeRef}
+      className={cn("p-3 rounded-md bg-blue-100 space-y-4", className)}
+    >
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Typography variant={"h5"}>Requirement Analysis</Typography>
+          <Typography variant={"h5"}>{project?.title}</Typography>
           <Plus size={20} />
         </div>
         <div className="flex items-center justify-between gap-5">
-          <Progress value={50} className="flex-1" />
+          <Progress
+            value={
+              (tasks?.filter(
+                (task) => task.status === ENUM_TASK_STATUS.COMPLETED
+              )?.length /
+                tasks?.length) *
+              100
+            }
+            className="flex-1"
+          />
           <Typography variant={"muted"} className="w-max">
-            3 Tasks
+            {tasks?.length} Tasks
           </Typography>
         </div>
       </div>

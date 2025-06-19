@@ -14,7 +14,7 @@ export type IUser = {
 export type IProject = {
   _id: string;
   title: string;
-  creator: IUser;
+  creator: Pick<IUser, "_id" | "fullName" | "email">;
   status: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -30,7 +30,7 @@ export type ITask = {
   title: string;
   description: string;
   status?: ENUM_TASK_STATUS;
-  creator: IUser;
+  creator: Pick<IUser, "_id" | "fullName" | "email">;
   dueDate: Date;
   assignedTo?: IGroup;
   category: IProject;
@@ -43,7 +43,7 @@ export type ITask = {
 export type ITaskComment = {
   _id?: string;
   task: ITask;
-  author: IUser;
+  author: Pick<IUser, "_id" | "fullName" | "email">;
   comment: string;
   isEdited: boolean;
   parentComment?: ITaskComment;

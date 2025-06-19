@@ -5,9 +5,10 @@ import { Link } from "react-router";
 
 function Projects() {
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4">
       {projects.map((project, index) => (
         <Container
+          className="flex-grow"
           title={
             <Link
               className="cursor-pointer hover:underline"

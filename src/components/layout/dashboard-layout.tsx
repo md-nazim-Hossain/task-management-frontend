@@ -7,7 +7,7 @@ function DashboardLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="bg-background">
+      <main className="bg-background flex-1">
         <Navbar />
         <div className="mt-[60px] p-4">
           <Outlet />

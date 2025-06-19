@@ -13,14 +13,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import CreateAndUpdateProject from "../projects/create-and-update-project";
 import CreateAndUpdateTask from "../tasks/create-and-update-task";
 import CreateAndUpdateGroup from "../groups/create-and-update-group";
 import CreateAndUpdateUser from "../users/create-and-update-user";
+import ChangePassword from "../users/change-password";
 function Navbar() {
   const { open, isMobile } = useSidebar();
   const pathname = useLocation().pathname;
+  const params = useParams();
   return (
     <div
       style={{
@@ -42,16 +44,16 @@ function Navbar() {
               }
             />
           ))}
-        {pathname === "/dashboard/projects/:projectId" ||
-          (pathname === "/dashboard/my-tasks" && (
-            <CreateAndUpdateTask
-              trigger={
-                <Button>
-                  <Plus /> New Task
-                </Button>
-              }
-            />
-          ))}
+        {(pathname === "/dashboard/projects/" + params?.slug ||
+          pathname === "/dashboard/my-tasks") && (
+          <CreateAndUpdateTask
+            trigger={
+              <Button>
+                <Plus /> New Task
+              </Button>
+            }
+          />
+        )}
         {pathname === "/dashboard/groups" && (
           <CreateAndUpdateGroup
             trigger={
@@ -88,12 +90,16 @@ function Navbar() {
             >
               <Settings /> Account Settings
             </Button>
-            <Button
-              variant={"transparent"}
-              className="w-full justify-start font-normal"
-            >
-              <Lock /> Change Password
-            </Button>
+            <ChangePassword
+              trigger={
+                <Button
+                  variant={"transparent"}
+                  className="w-full justify-start font-normal"
+                >
+                  <Lock /> Change Password
+                </Button>
+              }
+            />
             <Button
               variant={"transparent"}
               className="w-full justify-start font-normal"

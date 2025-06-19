@@ -59,8 +59,8 @@ export type IGroup = {
   title: string;
   description?: string;
   image?: string;
-  creator: IUser;
-  members: Array<IUser>;
+  creator: Pick<IUser, "_id" | "fullName" | "email">;
+  members: Array<Pick<IUser, "_id" | "fullName" | "email">>;
   status: boolean;
   createdAt?: Date;
   updatedAt?: Date;

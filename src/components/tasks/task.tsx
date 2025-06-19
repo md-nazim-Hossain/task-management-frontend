@@ -8,13 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import CreateAndUpdateTask from "./create-and-update-task";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
-import AlertModal from "../shared/alert-modal";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import AlertModal from "@/components/shared/alert-modal";
 type Props = {
   task: ITask;
+  className?: string;
 };
-function Task({ task }: Props) {
+function Task({ task, className }: Props) {
   const status =
     task?.status === ENUM_TASK_STATUS.IN_PROGRESS
       ? "progress"
@@ -25,7 +30,8 @@ function Task({ task }: Props) {
   return (
     <div
       className={cn(
-        "border bg-background rounded-md p-4 min-w-[324px] space-y-4"
+        "border bg-background rounded-md p-4 min-w-[324px] space-y-4",
+        className
       )}
     >
       <div className="flex items-center justify-between gap-3">

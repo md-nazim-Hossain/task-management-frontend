@@ -46,6 +46,23 @@ const addAndUpdateUserSchema = z
     path: ["confirmPassword"],
   });
 
+const changePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    newPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 export type ILoginSchema = z.infer<typeof loginSchema>;
 export type ICreateAndUpdateProjectSchema = z.infer<
   typeof createAndUpdateProjectSchema
@@ -57,10 +74,12 @@ export type ICreateAndUpdateGroupSchema = z.infer<
   typeof createAndUpdateGroupSchema
 >;
 export type IAddAndUpdateUserSchema = z.infer<typeof addAndUpdateUserSchema>;
+export type IChangePasswordSchema = z.infer<typeof changePasswordSchema>;
 export {
   loginSchema,
   createAndUpdateProjectSchema,
   createAndUpdateTaskSchema,
   createAndUpdateGroupSchema,
   addAndUpdateUserSchema,
+  changePasswordSchema,
 };

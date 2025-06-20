@@ -13,6 +13,9 @@ import AlertModal from "@/components/shared/alert-modal";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
 import avatar from "@/assets/images/avatar.png";
 import { format } from "date-fns";
+import { useDeleteGroupMutation } from "@/redux/api/group-api";
+import { toast } from "sonner";
+import MemberLists from "../shared/member-list";
 
 type Props = {
   className?: string;
@@ -21,13 +24,21 @@ type Props = {
 
 function Group({ group, className }: Props) {
   const members = group?.members || [];
-  const visibleMembers = members.slice(0, 3);
-  const extraCount = members.length - visibleMembers.length;
+  const [deleteGroup] = useDeleteGroupMutation();
+
+  const handleDeleteGroup = async () => {
+    try {
+      await deleteGroup(group._id as string).unwrap();
+      toast.success("Group deleted successfully");
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+    }
+  };
 
   return (
     <div
       className={cn(
-        "border bg-background shadow rounded-md p-4 min-w-xs max-w-sm space-y-4",
+        "border bg-background h-max shadow rounded-md p-4 min-w-xs max-w-sm space-y-4",
         className
       )}
     >
@@ -55,6 +66,8 @@ function Group({ group, className }: Props) {
               Add Members
             </Button>
             <CreateAndUpdateGroup
+              defaultValues={group}
+              isEdit
               trigger={
                 <Button
                   variant={"transparent"}
@@ -66,6 +79,7 @@ function Group({ group, className }: Props) {
               }
             />
             <AlertModal
+              onConfirm={handleDeleteGroup}
               trigger={
                 <Button
                   variant={"transparent"}
@@ -88,23 +102,7 @@ function Group({ group, className }: Props) {
         <Typography variant={"small"} className="uppercase font-normal mb-1">
           Members
         </Typography>
-        <div className="flex items-center space-x-[-8px]">
-          {visibleMembers.map((member, idx) => (
-            <CustomAvatarImage
-              key={idx}
-              name={member?.fullName}
-              alt={member?.fullName}
-              src={avatar}
-              className="size-7 rounded-full border-2 border-white shadow-sm"
-            />
-          ))}
-
-          {extraCount > 0 && (
-            <div className="size-7 relative z-10 rounded-full bg-gray-200 text-gray-700 text-xs font-medium flex items-center justify-center border-2 border-white shadow-sm">
-              +{extraCount}
-            </div>
-          )}
-        </div>
+        <MemberLists members={members} />
       </div>
 
       {/* Creator & Created Date */}

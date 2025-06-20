@@ -39,9 +39,9 @@ const createAndUpdateTaskSchema = z.object({
 const createAndUpdateGroupSchema = z.object({
   title: z.string().min(3, "Name must be at least 3 characters long"),
   description: z.string().optional(),
-  image: z.instanceof(File).optional(),
+  image: z.any().optional(),
   status: z.boolean().default(true).optional(),
-  members: z.array(z.string()).optional(),
+  members: z.array(z.any()).optional(),
 });
 
 const addAndUpdateUserSchema = z

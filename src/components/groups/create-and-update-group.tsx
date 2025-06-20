@@ -24,7 +24,13 @@ import {
 } from "@/const/schema";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "../ui/checkbox";
-
+import type { IGroup } from "@/types";
+import { toast } from "sonner";
+import {
+  useCreateGroupMutation,
+  useUpdateGroupMutation,
+} from "@/redux/api/group-api";
+import { useState } from "react";
 const USERS = [
   { id: "123e4567-e89b-12d3-a456-426614174000", name: "John Doe" },
   { id: "123e4567-e89b-12d3-a456-426614174001", name: "Jane Smith" },
@@ -32,32 +38,51 @@ const USERS = [
 
 type Props = {
   trigger: React.ReactNode;
+  defaultValues?: Partial<IGroup>;
+  isEdit?: boolean;
 };
 
-function CreateAndUpdateGroup({ trigger }: Props) {
+function CreateAndUpdateGroup({ trigger, isEdit, defaultValues }: Props) {
+  const [open, setOpen] = useState(false);
   const form = useForm<ICreateAndUpdateGroupSchema>({
     resolver: zodResolver(createAndUpdateGroupSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      image: undefined,
-      status: true,
-      members: [],
+      title: defaultValues?.title ?? "",
+      description: defaultValues?.description ?? "",
+      image: defaultValues?.image ?? undefined,
+      status: defaultValues?.status ?? false,
+      members: defaultValues?.members ?? [],
     },
   });
 
+  const [createGroup] = useCreateGroupMutation();
+  const [updateGroup] = useUpdateGroupMutation();
+
   async function onSubmit(data: ICreateAndUpdateGroupSchema) {
-    console.log(data);
+    try {
+      if (isEdit) {
+        await updateGroup({ ...data, _id: defaultValues?._id }).unwrap();
+        toast.success("Group updated successfully");
+      } else {
+        await createGroup(data).unwrap();
+        toast.success("Group created successfully");
+      }
+      form.reset();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+      console.log(error);
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {trigger}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="border-b pb-4">
-          <DialogTitle>Create New Group</DialogTitle>
+          <DialogTitle>{isEdit ? "Update" : "Create New "} Group</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -182,9 +207,9 @@ function CreateAndUpdateGroup({ trigger }: Props) {
             <DialogFooter>
               <FormSubmitButton
                 loading={form.formState.isSubmitting}
-                loadingText="Submitting..."
+                loadingText={isEdit ? "Updating..." : "Creating..."}
               >
-                Submit
+                {isEdit ? "Update" : "Create"}
               </FormSubmitButton>
             </DialogFooter>
           </form>

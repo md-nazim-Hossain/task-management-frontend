@@ -61,7 +61,7 @@ export type IGroup = {
   description?: string;
   image?: string;
   creator: Pick<IUser, "_id" | "fullName" | "email">;
-  members: Array<Pick<IUser, "_id" | "fullName" | "email">>;
+  members: Array<Pick<IUser, "_id" | "fullName" | "email" | "profileImage">>;
   status: boolean;
   createdAt?: Date;
   updatedAt?: Date;

@@ -1,12 +1,12 @@
 import {
   ENUM_TASK_PRIORITY,
   ENUM_TASK_STATUS,
+  type IGroup,
   type ITask,
   type IUser,
 } from "@/types";
 import { Typography } from "@/components/ui/typography";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
-import avatar from "@/assets/images/avatar.png";
 import TaskPriority from "./task-priority";
 import { Calendar, Edit, EllipsisVertical, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,7 @@ import AlertModal from "@/components/shared/alert-modal";
 import CommentsContainer from "../comments/comments-container";
 import { useDeleteTaskMutation } from "@/redux/api/task-api";
 import { toast } from "sonner";
+import MemberLists from "../shared/member-list";
 
 type Props = {
   task: ITask;
@@ -38,9 +39,10 @@ function Task({ task, className }: Props) {
 
   const projectId = task?.category as string;
   const creator = task?.creator as IUser;
-  const [deleteTask] = useDeleteTaskMutation();
+  const assignedTo = task?.assignedTo as IGroup;
+  const members = assignedTo?.members as IUser[];
 
-  console.log(task);
+  const [deleteTask] = useDeleteTaskMutation();
 
   const handleDelete = async () => {
     try {
@@ -128,17 +130,7 @@ function Task({ task, className }: Props) {
       </div>
       <Separator />
       <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-1">
-          {[1, 2, 3].map((i) => (
-            <CustomAvatarImage
-              key={i}
-              className="size-6"
-              alt="avatar"
-              name="Akram Khan"
-              src={avatar}
-            />
-          ))}
-        </div>
+        <MemberLists members={members} />
         <CommentsContainer
           taskName={task?.title}
           description={task?.description ?? ""}

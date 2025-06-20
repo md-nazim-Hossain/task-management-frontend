@@ -32,6 +32,7 @@ import {
 import {
   ENUM_TASK_PRIORITY,
   ENUM_TASK_STATUS,
+  type IGroup,
   type IProject,
   type ITask,
   type ITaskAttachment,
@@ -54,10 +55,7 @@ import {
 import { toast } from "sonner";
 import { useState } from "react";
 import AllProjects from "../projects/all-projects";
-const USERS = [
-  { id: "123e4567-e89b-12d3-a456-426614174000", name: "John Doe" },
-  { id: "123e4567-e89b-12d3-a456-426614174001", name: "Jane Smith" },
-];
+import AllGroups from "../groups/all-groups";
 
 type Props = {
   trigger: React.ReactNode;
@@ -83,6 +81,7 @@ function CreateAndUpdateTask({
       category: (defaultValues?.category as IProject)?._id ?? projectId,
       attachment: (defaultValues?.attachment as ITaskAttachment) ?? undefined,
       status: defaultValues?.status ?? ENUM_TASK_STATUS.TODO,
+      assignedTo: (defaultValues?.assignedTo as IGroup)?._id ?? "",
     },
   });
 
@@ -177,15 +176,11 @@ function CreateAndUpdateTask({
                     >
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a user" />
+                          <SelectValue placeholder="Select a group" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {USERS.map((user) => (
-                          <SelectItem key={user.id} value={user.id}>
-                            {user.name}
-                          </SelectItem>
-                        ))}
+                        <AllGroups />
                       </SelectContent>
                     </Select>
                     <FormMessage />

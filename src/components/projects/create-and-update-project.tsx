@@ -23,20 +23,34 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useCreateProjectMutation } from "@/redux/api/project-api";
+import { toast } from "sonner";
+import { useState } from "react";
 
 type Props = {
   trigger: React.ReactNode;
 };
 function CreateAndUpdateProject({ trigger }: Props) {
+  const [open, setOpen] = useState(false);
   const form = useForm<ICreateAndUpdateProjectSchema>({
     resolver: zodResolver(createAndUpdateProjectSchema),
   });
 
+  const [createProject] = useCreateProjectMutation();
+
   async function onSubmit(data: ICreateAndUpdateProjectSchema) {
-    console.log(data);
+    try {
+      await createProject(data).unwrap();
+      toast.success("Project created successfully");
+      form.reset();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+      console.log(error);
+    }
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {trigger}
       </DialogTrigger>

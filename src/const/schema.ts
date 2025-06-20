@@ -16,7 +16,12 @@ const createAndUpdateTaskSchema = z.object({
   dueDate: z
     .string()
     .datetime({ message: "Invalid date format, expected ISO 8601" }),
-  priority: z.enum(Object.values(ENUM_TASK_PRIORITY) as [string, ...string[]]),
+  priority: z.enum(
+    Object.values(ENUM_TASK_PRIORITY) as [
+      ENUM_TASK_PRIORITY,
+      ...ENUM_TASK_PRIORITY[]
+    ]
+  ),
   assignedTo: z.string().optional(),
   category: z.string().min(1, "Project cannot be empty"),
   attachment: z.instanceof(File).optional(),
@@ -63,6 +68,10 @@ const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
+const addCommentSchema = z.object({
+  comment: z.string().min(1, "Comment cannot be empty"),
+});
+
 export type ILoginSchema = z.infer<typeof loginSchema>;
 export type ICreateAndUpdateProjectSchema = z.infer<
   typeof createAndUpdateProjectSchema
@@ -75,6 +84,7 @@ export type ICreateAndUpdateGroupSchema = z.infer<
 >;
 export type IAddAndUpdateUserSchema = z.infer<typeof addAndUpdateUserSchema>;
 export type IChangePasswordSchema = z.infer<typeof changePasswordSchema>;
+export type IAddCommentSchema = z.infer<typeof addCommentSchema>;
 export {
   loginSchema,
   createAndUpdateProjectSchema,
@@ -82,4 +92,5 @@ export {
   createAndUpdateGroupSchema,
   addAndUpdateUserSchema,
   changePasswordSchema,
+  addCommentSchema,
 };

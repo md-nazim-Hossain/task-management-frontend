@@ -16,6 +16,7 @@ export type IProject = {
   title: string;
   slug: string;
   creator: Pick<IUser, "_id" | "fullName" | "email">;
+  tasks?: Array<ITask>;
   status: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -32,11 +33,11 @@ export type ITask = {
   description: string;
   status?: ENUM_TASK_STATUS;
   creator: Pick<IUser, "_id" | "fullName" | "email">;
-  dueDate: Date;
-  assignedTo?: IGroup;
-  category: IProject;
+  dueDate: string;
+  assignedTo?: IGroup | string;
+  category: IProject | string;
   priority?: ENUM_TASK_PRIORITY;
-  attachment?: ITaskAttachment;
+  attachment?: ITaskAttachment | File;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -44,7 +45,7 @@ export type ITask = {
 export type ITaskComment = {
   _id?: string;
   task: ITask;
-  author: Pick<IUser, "_id" | "fullName" | "email">;
+  author: Pick<IUser, "_id" | "fullName" | "email" | "profileImage">;
   comment: string;
   isEdited: boolean;
   parentComment?: ITaskComment;
@@ -83,3 +84,19 @@ export enum ENUM_TASK_PRIORITY {
   MEDIUM = "medium",
   HIGH = "high",
 }
+export type IAPIResponse<T = unknown> = {
+  success: boolean;
+  data: T | null;
+  message: string;
+  error: string | null;
+  meta?: IPaginationMeta;
+};
+
+export type IPaginationMeta = {
+  previousId: number | null;
+  nextId: number | null;
+  currentId: number;
+  total: number;
+  totalPage: number;
+  limit: number;
+};

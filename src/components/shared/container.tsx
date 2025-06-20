@@ -12,19 +12,33 @@ type Props = {
   tasks: Array<ITask>;
   render: (task: ITask, index: number) => React.ReactNode;
   style?: React.CSSProperties;
+  projectId: string;
 };
-function Container({ className, tasks, title, render, style }: Props) {
+function Container({
+  className,
+  tasks,
+  title,
+  render,
+  style,
+  projectId,
+}: Props) {
   return (
     <div
       style={style}
-      className={cn("p-3 h-max rounded-lg bg-blue-100 space-y-4", className)}
+      className={cn(
+        "p-3 h-max rounded-lg bg-blue-100 space-y-4 max-w-sm",
+        className
+      )}
     >
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Typography variant={"h5"} className="capitalize">
             {title}
           </Typography>
-          <CreateAndUpdateTask trigger={<Plus size={20} />} />
+          <CreateAndUpdateTask
+            projectId={projectId}
+            trigger={<Plus size={20} />}
+          />
         </div>
         <div className="flex items-center justify-between gap-5">
           <Progress
@@ -46,6 +60,7 @@ function Container({ className, tasks, title, render, style }: Props) {
         {tasks.map((task, index) => render(task, index))}
       </div>
       <CreateAndUpdateTask
+        projectId={projectId}
         trigger={
           <Button
             variant={"transparent"}

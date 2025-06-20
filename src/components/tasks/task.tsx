@@ -1,4 +1,10 @@
-import { ENUM_TASK_PRIORITY, ENUM_TASK_STATUS, type ITask } from "@/types";
+import {
+  ENUM_TASK_PRIORITY,
+  ENUM_TASK_STATUS,
+  type IProject,
+  type ITask,
+  type IUser,
+} from "@/types";
 import { Typography } from "@/components/ui/typography";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
 import avatar from "@/assets/images/avatar.png";
@@ -15,6 +21,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/shared/alert-modal";
+import CommentsContainer from "../comments/comments-container";
 type Props = {
   task: ITask;
   className?: string;
@@ -26,6 +33,11 @@ function Task({ task, className }: Props) {
       : task?.status === ENUM_TASK_STATUS.TODO
       ? "todo"
       : "success";
+
+  const projectId = task?.category as string;
+  const creator = task?.creator as IUser;
+
+  console.log(task);
 
   return (
     <div
@@ -42,6 +54,7 @@ function Task({ task, className }: Props) {
           </PopoverTrigger>
           <PopoverContent align="end" className="p-1 w-44">
             <CreateAndUpdateTask
+              projectId={projectId}
               trigger={
                 <Button
                   variant={"transparent"}
@@ -70,13 +83,11 @@ function Task({ task, className }: Props) {
           <div className="bg-blue-100 flex items-center gap-2 rounded">
             <CustomAvatarImage
               className="size-6"
-              alt="avatar"
-              name="Akram Khan"
-              src={avatar}
+              alt={creator?.fullName}
+              name={creator?.fullName}
+              src={creator?.profileImage as string}
             />
-            <Typography variant={"xsmall"}>
-              {task?.creator?.fullName}
-            </Typography>
+            <Typography variant={"xsmall"}>{creator?.fullName}</Typography>
           </div>
         </div>
         <div className="space-y-1 w-[40%]">
@@ -113,9 +124,18 @@ function Task({ task, className }: Props) {
             />
           ))}
         </div>
-        <Typography className="text-blue-800" variant={"h6"}>
-          3 Comments
-        </Typography>
+        <CommentsContainer
+          taskName={task?.title}
+          description={task?.description ?? ""}
+          trigger={
+            <Typography
+              className="text-blue-800 cursor-pointer hover:underline"
+              variant={"h6"}
+            >
+              3 Comments
+            </Typography>
+          }
+        />
       </div>
     </div>
   );

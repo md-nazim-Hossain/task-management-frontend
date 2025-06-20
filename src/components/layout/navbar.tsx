@@ -34,18 +34,17 @@ function Navbar() {
     >
       <SidebarTrigger />
       <div className="flex items-center gap-5">
-        {pathname === "/dashboard" ||
-          (pathname === "/dashboard/projects" && (
-            <CreateAndUpdateProject
-              trigger={
-                <Button>
-                  <Plus /> New Project
-                </Button>
-              }
-            />
-          ))}
+        {(pathname === "/dashboard" || pathname === "/dashboard/projects") && (
+          <CreateAndUpdateProject
+            trigger={
+              <Button>
+                <Plus /> New Project
+              </Button>
+            }
+          />
+        )}
         {(pathname === "/dashboard/projects/" + params?.slug ||
-          pathname === "/dashboard/my-tasks") && (
+          pathname.startsWith("/dashboard/my-tasks")) && (
           <CreateAndUpdateTask
             trigger={
               <Button>
@@ -54,7 +53,7 @@ function Navbar() {
             }
           />
         )}
-        {pathname === "/dashboard/groups" && (
+        {pathname.startsWith("/dashboard/groups") && (
           <CreateAndUpdateGroup
             trigger={
               <Button>
@@ -63,7 +62,7 @@ function Navbar() {
             }
           />
         )}
-        {pathname === "/dashboard/users" && (
+        {pathname.startsWith("/dashboard/users") && (
           <CreateAndUpdateUser
             trigger={
               <Button>

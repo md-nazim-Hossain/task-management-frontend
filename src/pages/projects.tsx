@@ -1,13 +1,25 @@
 import Container from "@/components/shared/container";
+import ContainerSkeleton from "@/components/shared/container-skeleton";
 import Task from "@/components/tasks/task";
-import { projects, tasks } from "@/const/data";
+import { useGetProjectsQuery } from "@/redux/api/project-api";
 import { Link } from "react-router";
 
 function Projects() {
+  const { data, isLoading } = useGetProjectsQuery();
+  if (isLoading)
+    return (
+      <div className="flex flex-wrap gap-4">
+        {[...Array(4)].map((_, i) => (
+          <ContainerSkeleton key={i} />
+        ))}
+      </div>
+    );
+  const projects = data?.data || [];
   return (
     <div className="flex flex-wrap gap-4">
       {projects.map((project, index) => (
         <Container
+          projectId={project._id}
           className="flex-grow"
           title={
             <Link
@@ -18,7 +30,7 @@ function Projects() {
             </Link>
           }
           key={index}
-          tasks={tasks}
+          tasks={project.tasks || []}
           render={(task, index) => <Task task={task} key={index} />}
         />
       ))}

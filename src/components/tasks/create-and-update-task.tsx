@@ -41,37 +41,53 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
-
+import { useCreateTaskMutation } from "@/redux/api/task-api";
+import { toast } from "sonner";
+import { useState } from "react";
+import AllProjects from "../projects/all-projects";
 const USERS = [
   { id: "123e4567-e89b-12d3-a456-426614174000", name: "John Doe" },
   { id: "123e4567-e89b-12d3-a456-426614174001", name: "Jane Smith" },
 ];
-const CATEGORIES = ["Work", "Personal", "Urgent"];
 
 type Props = {
   trigger: React.ReactNode;
+  projectId: string;
 };
 
-function CreateAndUpdateTask({ trigger }: Props) {
+function CreateAndUpdateTask({ trigger, projectId }: Props) {
+  const [open, setOpen] = useState(false);
   const form = useForm<ICreateAndUpdateTaskSchema>({
     resolver: zodResolver(createAndUpdateTaskSchema),
     defaultValues: {
       title: "",
       description: "",
-      dueDate: undefined,
+      dueDate: "",
       priority: ENUM_TASK_PRIORITY.LOW,
-      assignedTo: undefined,
-      category: "",
+      category: projectId,
       attachment: undefined,
     },
   });
 
+  const [createTask] = useCreateTaskMutation();
+
   async function onSubmit(data: ICreateAndUpdateTaskSchema) {
-    console.log(data);
+    try {
+      await createTask({
+        ...data,
+        category: projectId,
+      }).unwrap();
+      toast.success("Tak created successfully");
+      form.reset();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+      console.log(error);
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {trigger}
       </DialogTrigger>
@@ -161,7 +177,7 @@ function CreateAndUpdateTask({ trigger }: Props) {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel> Category</FormLabel>
+                    <FormLabel>Project</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -172,11 +188,7 @@ function CreateAndUpdateTask({ trigger }: Props) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {CATEGORIES.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
+                        <AllProjects />
                       </SelectContent>
                     </Select>
                     <FormMessage />

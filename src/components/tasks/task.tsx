@@ -2,6 +2,7 @@ import {
   ENUM_TASK_PRIORITY,
   ENUM_TASK_STATUS,
   type IGroup,
+  type IProject,
   type ITask,
   type ITaskAttachment,
   type IUser,
@@ -61,7 +62,7 @@ function Task({ task, className }: Props) {
   return (
     <div
       className={cn(
-        "border bg-background rounded-md p-4 min-w-[324px] space-y-4",
+        "border bg-background rounded-md p-4 min-w-sm space-y-4",
         className
       )}
     >
@@ -133,6 +134,12 @@ function Task({ task, className }: Props) {
             </Typography>
           </div>
         </div>
+      </div>
+      <div>
+        <Typography variant={"muted"}>Project Name</Typography>
+        <Typography variant={"xsmall"}>
+          {(task?.category as IProject)?.title}
+        </Typography>
       </div>
       {attachment?.fileUrl && (
         <div className="space-y-2">

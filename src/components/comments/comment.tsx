@@ -12,14 +12,17 @@ import { Edit, EllipsisVertical, Trash2 } from "lucide-react";
 import AlertModal from "@/components/shared/alert-modal";
 import { useDeleteTaskCommentMutation } from "@/redux/api/task-comment-api";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
+import { useState } from "react";
+import AddComment from "./add-comment";
+import { formatDistanceToNow } from "date-fns";
 type Props = {
   comment: ITaskComment;
   className?: string;
 };
 function Comment({ comment, className }: Props) {
   const [deleteTaskComment] = useDeleteTaskCommentMutation();
+  const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
   const handleDelete = async () => {
     try {
       await deleteTaskComment(comment._id as string).unwrap();
@@ -28,9 +31,8 @@ function Comment({ comment, className }: Props) {
     }
   };
 
-  const user = useSelector((state: RootState) => state.auth.user);
   return (
-    <div className={cn("", className)}>
+    <div className={cn("space-y-1", className)}>
       <div className="flex gap-3 justify-between">
         <div className="flex gap-2">
           <CustomAvatarImage
@@ -43,19 +45,26 @@ function Comment({ comment, className }: Props) {
             <Typography variant={"small"}>
               {comment?.author?.fullName}
               <span className="text-muted-foreground text-xs ml-1">
-                {comment?.author?._id === user?._id && "(You)"}
+                {formatDistanceToNow(new Date(comment?.createdAt as string), {
+                  addSuffix: true,
+                })}{" "}
+                {comment?.isEdited ? "(edited)" : ""}
               </span>
             </Typography>
             <Typography variant={"muted"}>{comment?.comment}</Typography>
           </div>
         </div>
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild className="cursor-pointer">
             <EllipsisVertical size={20} />
           </PopoverTrigger>
           <PopoverContent align="end" className="p-2">
             <Button
               variant={"transparent"}
+              onClick={() => {
+                setOpen(false);
+                setEdit(true);
+              }}
               className="w-full justify-start font-normal"
             >
               <Edit /> Edit
@@ -74,6 +83,14 @@ function Comment({ comment, className }: Props) {
           </PopoverContent>
         </Popover>
       </div>
+      {edit && (
+        <AddComment
+          taskId={comment?.task?._id as string}
+          isEdit
+          comment={comment}
+          onSuccess={() => setEdit(false)}
+        />
+      )}
     </div>
   );
 }

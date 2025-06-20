@@ -46,7 +46,7 @@ function Container({
     <div
       style={style}
       className={cn(
-        "p-3 h-max rounded-lg bg-blue-100 space-y-4 max-w-sm",
+        "p-3 h-max min-w-sm rounded-lg bg-blue-100 space-y-4 max-w-md",
         className
       )}
     >
@@ -68,7 +68,7 @@ function Container({
                     variant={"transparent"}
                     className="w-full rounded justify-start font-normal"
                   >
-                    <Edit /> Edit Task
+                    <Edit /> Edit Project
                   </Button>
                 }
               />
@@ -79,7 +79,7 @@ function Container({
                     variant={"transparent"}
                     className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
                   >
-                    <Trash2 /> Delete Task
+                    <Trash2 /> Delete Project
                   </Button>
                 }
               />
@@ -94,7 +94,7 @@ function Container({
           </Typography>
         </div>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 pr-1 max-h-[75vh] overflow-y-auto scrollbar">
         {tasks.map((task, index) => render(task, index))}
       </div>
       <CreateAndUpdateTask

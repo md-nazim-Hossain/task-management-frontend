@@ -1,6 +1,6 @@
 // src/redux/api/taskApi.ts
 
-import type { IFromUpdateData, ITask } from "@/types";
+import type { IAPIResponse, IFromUpdateData, ITask } from "@/types";
 import { apiSlice } from "./api-slice";
 
 export const taskApi = apiSlice.injectEndpoints({
@@ -15,7 +15,7 @@ export const taskApi = apiSlice.injectEndpoints({
       providesTags: ["Task"],
     }),
 
-    getMyTasks: builder.query<ITask[], void>({
+    getMyTasks: builder.query<IAPIResponse<ITask[]>, void>({
       query: () => "/task/my-tasks",
       providesTags: ["Task"],
     }),

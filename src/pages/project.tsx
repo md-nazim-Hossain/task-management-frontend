@@ -24,9 +24,11 @@ function Project() {
   ) as IProject;
   const projectTasks = project?.tasks || [];
   const groupTasks = _.groupBy(projectTasks, "status");
+  const statusOrder = ["todo", "in_progress", "completed"];
   return (
     <div className="flex gap-4 flex-wrap">
-      {Object.entries(groupTasks).map(([status, tasks]) => {
+      {statusOrder.map((status) => {
+        const statusTasks = groupTasks[status] || [];
         return (
           <Container
             value={
@@ -37,7 +39,7 @@ function Project() {
             key={status}
             project={project}
             title={status.split("_").join(" ")}
-            tasks={tasks as ITask[]}
+            tasks={statusTasks as ITask[]}
             render={(task, index) => <Task task={task} key={index} />}
           />
         );

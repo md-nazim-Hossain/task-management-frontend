@@ -12,28 +12,46 @@ import { useForm } from "react-hook-form";
 import { addCommentSchema, type IAddCommentSchema } from "@/const/schema";
 import { Button } from "../ui/button";
 import { Send } from "lucide-react";
-import { useCreateTaskCommentMutation } from "@/redux/api/task-comment-api";
+import {
+  useCreateTaskCommentMutation,
+  useUpdateTaskCommentMutation,
+} from "@/redux/api/task-comment-api";
 import { toast } from "sonner";
+import type { ITaskComment } from "@/types";
 
 type Props = {
   taskId: string;
+  isEdit?: boolean;
+  comment?: Partial<ITaskComment>;
+  onSuccess?: () => void;
 };
 
-function AddComment({ taskId }: Props) {
+function AddComment({ taskId, comment, isEdit, onSuccess }: Props) {
   const [createTaskComment] = useCreateTaskCommentMutation();
+  const [updateTaskComment] = useUpdateTaskCommentMutation();
   const form = useForm<IAddCommentSchema>({
     resolver: zodResolver(addCommentSchema),
     defaultValues: {
-      comment: "",
+      comment: isEdit ? comment?.comment : "",
     },
   });
 
   async function onSubmit(data: IAddCommentSchema) {
     try {
-      await createTaskComment({
-        task: taskId as any,
-        comment: data.comment,
-      }).unwrap();
+      if (isEdit) {
+        await updateTaskComment({
+          ...data,
+          _id: comment?._id as string,
+        }).unwrap();
+        toast.success("Comment updated successfully");
+      } else {
+        await createTaskComment({
+          task: taskId as any,
+          comment: data.comment,
+        }).unwrap();
+        toast.success("Comment created successfully");
+      }
+      if (onSuccess) onSuccess();
       form.reset();
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Something went wrong");

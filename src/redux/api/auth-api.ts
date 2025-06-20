@@ -34,6 +34,13 @@ export const authApi = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    dashboard: builder.query<
+      IAPIResponse<Array<{ title: string; value: number }>>,
+      void
+    >({
+      query: () => "/auth/dashboard",
+      providesTags: ["User", "Project", "Task", "Group"],
+    }),
   }),
 });
 
@@ -42,4 +49,5 @@ export const {
   useChangePasswordMutation,
   useGetMeQuery,
   useLogOutMutation,
+  useDashboardQuery,
 } = authApi;

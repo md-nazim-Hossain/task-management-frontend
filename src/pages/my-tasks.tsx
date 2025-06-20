@@ -1,27 +1,45 @@
 import Container from "@/components/shared/container";
+import ContainerSkeleton from "@/components/shared/container-skeleton";
 import Task from "@/components/tasks/task";
-import { projects, tasks } from "@/const/data";
-import { Link } from "react-router";
+import { useGetMyTasksQuery } from "@/redux/api/task-api";
+import _ from "lodash";
 
 function MyTasks() {
+  const { data, isLoading } = useGetMyTasksQuery();
+  if (isLoading) {
+    return (
+      <div className="flex flex-wrap gap-4">
+        {[...Array(4)].map((_, i) => (
+          <ContainerSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+  const tasks = data?.data || [];
+  const groupTasks = _.groupBy(tasks, "status");
+
+  const statusOrder = ["todo", "in_progress", "completed"];
   return (
-    <div className="flex flex-wrap gap-4">
-      {projects.map((project, index) => (
-        <Container
-          className="flex-grow"
-          title={
-            <Link
-              className="cursor-pointer hover:underline"
-              to={`/dashboard/projects/${project.slug}`}
-            >
-              {project.title}
-            </Link>
-          }
-          key={index}
-          tasks={tasks}
-          render={(task, index) => <Task task={task} key={index} />}
-        />
-      ))}
+    <div className="flex gap-4">
+      {statusOrder.map((status) => {
+        const statusTasks = groupTasks[status] || [];
+        return (
+          <Container
+            value={0}
+            key={status}
+            project={
+              {
+                title: "",
+                slug: status,
+                _id: "1",
+              } as any
+            }
+            title={status.replace("_", " ")}
+            tasks={statusTasks}
+            render={(task, index) => <Task task={task} key={index} />}
+          />
+        );
+      })}
     </div>
   );
 }

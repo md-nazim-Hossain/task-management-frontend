@@ -133,4 +133,13 @@
   .sb {
     @apply border border-red-600;
   }
+  .scrollbar::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground rounded-full;
+  }
 }

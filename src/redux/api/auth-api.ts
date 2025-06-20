@@ -1,26 +1,20 @@
-import { setToken } from "../slices/auth-slice";
+import type { IAPIResponse, ILoginUserResponse, IUser } from "@/types";
 import { apiSlice } from "./api-slice";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      { accessToken: string }, // response shape
-      { email: string; password: string } // request shape
+      IAPIResponse<ILoginUserResponse>,
+      { email: string; password: string }
     >({
       query: (credentials) => ({
         url: "/auth/login",
         method: "POST",
         body: credentials,
       }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          dispatch(setToken(data.accessToken));
-          localStorage.setItem("accessToken", data.accessToken);
-        } catch (err) {
-          console.error("Login error:", err);
-        }
-      },
+    }),
+    getMe: builder.query<IAPIResponse<IUser>, void>({
+      query: () => "/user/my-profile",
     }),
     changePassword: builder.mutation<
       { message: string },
@@ -32,7 +26,20 @@ export const authApi = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+
+    logOut: builder.mutation<IAPIResponse<boolean>, void>({
+      query: (credentials) => ({
+        url: "/auth/logout",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useChangePasswordMutation } = authApi;
+export const {
+  useLoginMutation,
+  useChangePasswordMutation,
+  useGetMeQuery,
+  useLogOutMutation,
+} = authApi;

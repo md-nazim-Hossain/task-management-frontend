@@ -100,3 +100,9 @@ export type IPaginationMeta = {
   totalPage: number;
   limit: number;
 };
+
+export type ILoginUserResponse = {
+  accessToken: string;
+  refreshToken?: string;
+  user: IUser;
+};

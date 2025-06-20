@@ -18,41 +18,66 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
-import {
-  addAndUpdateUserSchema,
-  type IAddAndUpdateUserSchema,
-} from "@/const/schema";
+import { addUserSchema, updateUserSchema } from "@/const/schema";
 import { Checkbox } from "../ui/checkbox";
+import type { IUser } from "@/types";
+import {
+  useCreateUserMutation,
+  useUpdateUserMutation,
+} from "@/redux/api/user-api";
+import { useState } from "react";
+import { toast } from "sonner";
+import type { z } from "zod";
 
 type Props = {
   trigger: React.ReactNode;
+  isEdit?: boolean;
+  defaultValues?: Partial<IUser>;
 };
 
-function CreateAndUpdateUser({ trigger }: Props) {
-  const form = useForm<IAddAndUpdateUserSchema>({
-    resolver: zodResolver(addAndUpdateUserSchema),
+function CreateAndUpdateUser({ trigger, isEdit, defaultValues }: Props) {
+  const [open, setOpen] = useState(false);
+  const formSchema = !isEdit ? addUserSchema : updateUserSchema;
+  type FormSchemaType = z.infer<typeof formSchema>;
+
+  const form = useForm<FormSchemaType>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      profileImage: undefined,
-      confirmPassword: "",
-      password: "",
-      status: true,
+      fullName: defaultValues?.fullName ?? "",
+      email: defaultValues?.email ?? "",
+      profileImage: defaultValues?.profileImage ?? "",
+      status: defaultValues?.status ?? false,
     },
   });
 
-  async function onSubmit(data: IAddAndUpdateUserSchema) {
-    console.log(data);
+  const [createUser] = useCreateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+
+  async function onSubmit(data: FormSchemaType) {
+    try {
+      if (isEdit) {
+        await updateUser({ ...data, _id: defaultValues?._id }).unwrap();
+        toast.success("User updated successfully");
+      } else {
+        await createUser(data).unwrap();
+        toast.success("User created successfully");
+      }
+      form.reset();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+      console.log(error);
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         {trigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader className="border-b pb-4">
-          <DialogTitle>Add New User</DialogTitle>
+          <DialogTitle>{isEdit ? "Update" : "Create New"} User</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -90,43 +115,45 @@ function CreateAndUpdateUser({ trigger }: Props) {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {!isEdit && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter your password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your confirm password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter your confirm password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
 
             <FormField
               control={form.control}
@@ -169,9 +196,9 @@ function CreateAndUpdateUser({ trigger }: Props) {
             <DialogFooter>
               <FormSubmitButton
                 loading={form.formState.isSubmitting}
-                loadingText="Submitting..."
+                loadingText={isEdit ? "Updating..." : "Creating..."}
               >
-                Submit
+                {isEdit ? "Update" : "Create"}
               </FormSubmitButton>
             </DialogFooter>
           </form>

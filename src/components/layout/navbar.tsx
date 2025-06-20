@@ -4,7 +4,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import avatar from "@/assets/images/avatar.png";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
 import { ChevronDown, Lock, LogOut, Plus, Settings } from "lucide-react";
 import {
@@ -13,16 +12,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import CreateAndUpdateProject from "../projects/create-and-update-project";
-import CreateAndUpdateTask from "../tasks/create-and-update-task";
 import CreateAndUpdateGroup from "../groups/create-and-update-group";
 import CreateAndUpdateUser from "../users/create-and-update-user";
 import ChangePassword from "../users/change-password";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
+import { useLogOutMutation } from "@/redux/api/auth-api";
+import { toast } from "sonner";
+import { setUser } from "@/redux/slices/auth-slice";
 function Navbar() {
+  const dispatch = useDispatch();
   const { open, isMobile } = useSidebar();
+  const navigate = useNavigate();
   const pathname = useLocation().pathname;
-  const params = useParams();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const [logOut] = useLogOutMutation();
+  const handleLogout = async () => {
+    try {
+      await logOut().unwrap();
+      toast.success("Logout successful");
+      dispatch(setUser(null));
+      navigate("/login");
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+    }
+  };
+
   return (
     <div
       style={{
@@ -34,7 +51,8 @@ function Navbar() {
     >
       <SidebarTrigger />
       <div className="flex items-center gap-5">
-        {(pathname === "/dashboard" || pathname === "/dashboard/projects") && (
+        {(pathname === "/dashboard" ||
+          pathname.startsWith("/dashboard/projects")) && (
           <CreateAndUpdateProject
             trigger={
               <Button>
@@ -43,16 +61,7 @@ function Navbar() {
             }
           />
         )}
-        {(pathname === "/dashboard/projects/" + params?.slug ||
-          pathname.startsWith("/dashboard/my-tasks")) && (
-          <CreateAndUpdateTask
-            trigger={
-              <Button>
-                <Plus /> New Task
-              </Button>
-            }
-          />
-        )}
+
         {pathname.startsWith("/dashboard/groups") && (
           <CreateAndUpdateGroup
             trigger={
@@ -75,8 +84,9 @@ function Navbar() {
           <PopoverTrigger asChild className="cursor-pointer">
             <div className="flex items-center gap-2">
               <CustomAvatarImage
-                alt="avatar"
-                src={avatar}
+                alt={user?.fullName as string}
+                name={user?.fullName as string}
+                src={user?.profileImage as string}
                 className="size-10"
               />
               <ChevronDown size={24} />
@@ -100,6 +110,7 @@ function Navbar() {
               }
             />
             <Button
+              onClick={handleLogout}
               variant={"transparent"}
               className="w-full justify-start font-normal"
             >

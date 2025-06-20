@@ -13,3 +13,10 @@ export const blurImage = () => {
       : window.btoa(image);
   return `data:image/svg+xml;base64,${toBase(image)}`;
 };
+
+export const addHTTPPrefix = (url: string) => {
+  if (!url?.startsWith("http://") && !url?.startsWith("https://")) {
+    return `${import.meta.env.VITE_API_URL}/public${url}`;
+  }
+  return url;
+};

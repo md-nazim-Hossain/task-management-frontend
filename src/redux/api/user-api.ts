@@ -1,4 +1,4 @@
-import type { IAPIResponse, IUser } from "@/types";
+import type { IAPIResponse, IFromUpdateData, IUser } from "@/types";
 import { apiSlice } from "./api-slice";
 
 export const userApi = apiSlice.injectEndpoints({
@@ -8,7 +8,7 @@ export const userApi = apiSlice.injectEndpoints({
         const query = new URLSearchParams();
         Object.entries(params || {}).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-            query.append(key, String(value)); // ensure value is string
+            query.append(key, String(value));
           }
         });
 
@@ -23,19 +23,19 @@ export const userApi = apiSlice.injectEndpoints({
         url: `/user/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User", "Project", "Task", "Group"],
     }),
 
-    updateUser: builder.mutation<IUser, Partial<IUser>>({
-      query: (user) => ({
-        url: `/user/${user._id}`,
+    updateUser: builder.mutation<IUser, IFromUpdateData>({
+      query: ({ id, body }) => ({
+        url: `/user/${id}`,
         method: "PATCH",
-        body: user,
+        body,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User", "Project", "Task", "Group"],
     }),
 
-    createUser: builder.mutation<IUser, Partial<IUser>>({
+    createUser: builder.mutation<IUser, FormData>({
       query: (user) => ({
         url: "/user/create-user",
         method: "POST",

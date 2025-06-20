@@ -8,22 +8,29 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import AddComment from "./add-comment";
-import type { ITaskComment } from "@/types";
+import { useGetTaskCommentsQuery } from "@/redux/api/task-comment-api";
+import Comment from "./comment";
+import { cn } from "@/lib/utils";
 
 type Props = {
   className?: string;
   trigger: React.ReactNode;
   taskName: string;
   description: string;
-  taskComment?: ITaskComment;
+  taskId: string;
 };
 function CommentsContainer({
   trigger,
   description,
   taskName,
   className,
-  taskComment,
+  taskId,
 }: Props) {
+  const { data, isLoading } = useGetTaskCommentsQuery(taskId);
+
+  if (isLoading) return <div>Loading...</div>;
+  const comments = data?.data || [];
+
   return (
     <Sheet>
       <SheetTrigger asChild>{trigger}</SheetTrigger>
@@ -32,9 +39,13 @@ function CommentsContainer({
           <SheetTitle>{taskName}</SheetTitle>
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
-
+        <div className={cn("space-y-4 p-4", className)}>
+          {comments.map((comment) => (
+            <Comment comment={comment} key={comment._id} />
+          ))}
+        </div>
         <SheetFooter>
-          <AddComment taskId={"1"} />
+          <AddComment taskId={taskId} />
         </SheetFooter>
       </SheetContent>
     </Sheet>

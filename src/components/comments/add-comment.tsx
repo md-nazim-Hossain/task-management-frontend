@@ -12,12 +12,15 @@ import { useForm } from "react-hook-form";
 import { addCommentSchema, type IAddCommentSchema } from "@/const/schema";
 import { Button } from "../ui/button";
 import { Send } from "lucide-react";
+import { useCreateTaskCommentMutation } from "@/redux/api/task-comment-api";
+import { toast } from "sonner";
 
 type Props = {
   taskId: string;
 };
 
 function AddComment({ taskId }: Props) {
+  const [createTaskComment] = useCreateTaskCommentMutation();
   const form = useForm<IAddCommentSchema>({
     resolver: zodResolver(addCommentSchema),
     defaultValues: {
@@ -26,7 +29,15 @@ function AddComment({ taskId }: Props) {
   });
 
   async function onSubmit(data: IAddCommentSchema) {
-    console.log(data);
+    try {
+      await createTaskComment({
+        task: taskId as any,
+        comment: data.comment,
+      }).unwrap();
+      form.reset();
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+    }
   }
 
   return (
@@ -47,7 +58,11 @@ function AddComment({ taskId }: Props) {
             </FormItem>
           )}
         />
-        <Button size={"lg"}>
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting || !form.formState.isValid}
+          size={"lg"}
+        >
           <Send />
         </Button>
       </form>

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { addHTTPPrefix } from "@/utils/image-loader";
 
 type Props = {
   src: string;
@@ -9,6 +10,7 @@ type Props = {
   name?: string;
   imgClassName?: string;
   onClick?: () => void;
+  withHttp?: boolean;
 };
 function CustomAvatarImage({
   alt,
@@ -17,6 +19,7 @@ function CustomAvatarImage({
   name,
   imgClassName,
   onClick,
+  withHttp = true,
 }: Props) {
   const [loadingImage, setLoadingImage] = React.useState(true);
   const [error, setError] = React.useState(true);
@@ -24,9 +27,8 @@ function CustomAvatarImage({
     <div
       onClick={onClick}
       className={cn(
-        "size-[42px] flex-shrink-0 relative rounded overflow-hidden",
-        className,
-        loadingImage ? "border" : "border-none"
+        "size-[42px] border-2 flex-shrink-0 relative rounded overflow-hidden",
+        className
       )}
     >
       {(error || !src) && (
@@ -45,7 +47,7 @@ function CustomAvatarImage({
           sizes="(min-width: 20em) 14vw,
                     (min-width: 14em) 25vw,
                     100vw"
-          src={src}
+          src={!withHttp ? src : addHTTPPrefix(src)}
           alt={alt}
           className={cn(
             "object-cover object-[top_center] duration-300 ease-in-out ",

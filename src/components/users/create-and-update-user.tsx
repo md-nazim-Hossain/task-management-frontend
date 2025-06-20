@@ -28,6 +28,8 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
+import CustomAvatarImage from "../shared/custom-avatar-image";
+import { addHTTPPrefix } from "@/utils/image-loader";
 
 type Props = {
   trigger: React.ReactNode;
@@ -47,6 +49,7 @@ function CreateAndUpdateUser({ trigger, isEdit, defaultValues }: Props) {
       email: defaultValues?.email ?? "",
       profileImage: defaultValues?.profileImage ?? "",
       status: defaultValues?.status ?? false,
+      password: "",
     },
   });
 
@@ -55,18 +58,28 @@ function CreateAndUpdateUser({ trigger, isEdit, defaultValues }: Props) {
 
   async function onSubmit(data: FormSchemaType) {
     try {
-      if (isEdit) {
-        await updateUser({ ...data, _id: defaultValues?._id }).unwrap();
+      const formData = new FormData();
+      formData.append("fullName", data.fullName);
+      formData.append("email", data.email);
+      formData.append("status", data.status ? "true" : "false");
+
+      if (data.profileImage instanceof File) {
+        formData.append("profileImage", data.profileImage);
+      }
+
+      if (isEdit && defaultValues?._id) {
+        await updateUser({ id: defaultValues._id, body: formData }).unwrap();
         toast.success("User updated successfully");
       } else {
-        await createUser(data).unwrap();
+        formData.append("password", (data as any)?.password);
+        await createUser(formData).unwrap();
         toast.success("User created successfully");
       }
+
       form.reset();
       setOpen(false);
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Something went wrong");
-      console.log(error);
     }
   }
 
@@ -158,16 +171,32 @@ function CreateAndUpdateUser({ trigger, isEdit, defaultValues }: Props) {
             <FormField
               control={form.control}
               name="profileImage"
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <FormItem>
                   <FormLabel>Profile Image</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) =>
-                        onChange(e.target.files?.[0] || undefined)
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        onChange={(e) => {
+                          if (!e.target.files?.[0]) return;
+                          onChange(e.target.files?.[0]);
+                        }}
+                      />
+                      {form.watch("profileImage") && (
+                        <CustomAvatarImage
+                          src={
+                            value instanceof File
+                              ? URL.createObjectURL(value)
+                              : addHTTPPrefix(value)
+                          }
+                          withHttp={false}
+                          alt={form.watch("fullName")}
+                          className="h-28 w-48"
+                          name={form.watch("fullName")}
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

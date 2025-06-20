@@ -31,6 +31,8 @@ import {
   useUpdateGroupMutation,
 } from "@/redux/api/group-api";
 import { useState } from "react";
+import CustomAvatarImage from "../shared/custom-avatar-image";
+import { addHTTPPrefix } from "@/utils/image-loader";
 
 type Props = {
   trigger: React.ReactNode;
@@ -56,8 +58,18 @@ function CreateAndUpdateGroup({ trigger, isEdit, defaultValues }: Props) {
 
   async function onSubmit(data: ICreateAndUpdateGroupSchema) {
     try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description ?? "");
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+      formData.append("status", data.status ? "true" : "false");
       if (isEdit) {
-        await updateGroup({ ...data, _id: defaultValues?._id }).unwrap();
+        await updateGroup({
+          body: formData,
+          id: defaultValues?._id as string,
+        }).unwrap();
         toast.success("Group updated successfully");
       } else {
         await createGroup(data).unwrap();
@@ -116,16 +128,32 @@ function CreateAndUpdateGroup({ trigger, isEdit, defaultValues }: Props) {
             <FormField
               control={form.control}
               name="image"
-              render={({ field: { onChange } }) => (
+              render={({ field: { onChange, value } }) => (
                 <FormItem>
                   <FormLabel>Group Cover Image</FormLabel>
                   <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) =>
-                        onChange(e.target.files?.[0] || undefined)
-                      }
-                    />
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        onChange={(e) => {
+                          if (!e.target.files?.[0]) return;
+                          onChange(e.target.files?.[0]);
+                        }}
+                      />
+                      {form.watch("image") && (
+                        <CustomAvatarImage
+                          src={
+                            value instanceof File
+                              ? URL.createObjectURL(value)
+                              : addHTTPPrefix(value)
+                          }
+                          withHttp={false}
+                          alt={form.watch("title")}
+                          className="h-28 w-48"
+                          name={form.watch("title")}
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

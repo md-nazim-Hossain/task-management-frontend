@@ -90,8 +90,23 @@ function CreateAndUpdateTask({
 
   async function onSubmit(data: ICreateAndUpdateTaskSchema) {
     try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description ?? "");
+      formData.append("dueDate", data.dueDate);
+      formData.append("priority", data.priority);
+      formData.append("status", data.status ?? ENUM_TASK_STATUS.TODO);
+      formData.append("category", data.category);
+      if (data.assignedTo) formData.append("assignedTo", data.assignedTo);
+      if (data.attachment instanceof File) {
+        formData.append("attachment", data.attachment);
+      }
+
       if (isEdit) {
-        await updateTask({ ...data, _id: defaultValues?._id }).unwrap();
+        await updateTask({
+          id: defaultValues?._id as string,
+          body: formData,
+        }).unwrap();
         toast.success("Task updated successfully");
       } else {
         await createTask({
@@ -303,6 +318,7 @@ function CreateAndUpdateTask({
                     <FormControl>
                       <Input
                         type="file"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                         onChange={(e) =>
                           onChange(e.target.files?.[0] || undefined)
                         }

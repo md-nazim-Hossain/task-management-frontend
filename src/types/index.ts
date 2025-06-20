@@ -26,6 +26,7 @@ export type ITaskAttachment = {
   fileName: string;
   fileUrl: string;
   mimeType: string;
+  size: number;
 };
 export type ITask = {
   _id?: string;
@@ -105,4 +106,9 @@ export type ILoginUserResponse = {
   accessToken: string;
   refreshToken?: string;
   user: IUser;
+};
+
+export type IFromUpdateData = {
+  id: string;
+  body: FormData;
 };

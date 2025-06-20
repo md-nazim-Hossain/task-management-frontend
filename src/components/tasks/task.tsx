@@ -3,6 +3,7 @@ import {
   ENUM_TASK_STATUS,
   type IGroup,
   type ITask,
+  type ITaskAttachment,
   type IUser,
 } from "@/types";
 import { Typography } from "@/components/ui/typography";
@@ -24,6 +25,10 @@ import CommentsContainer from "../comments/comments-container";
 import { useDeleteTaskMutation } from "@/redux/api/task-api";
 import { toast } from "sonner";
 import MemberLists from "../shared/member-list";
+import FilePreview from "../shared/file-preview";
+import { formatFileSize } from "@/utils/file-size";
+import { Link } from "react-router";
+import { addHTTPPrefix } from "@/utils/image-loader";
 
 type Props = {
   task: ITask & { commentsCount: number };
@@ -43,7 +48,7 @@ function Task({ task, className }: Props) {
   const members = assignedTo?.members as IUser[];
 
   const [deleteTask] = useDeleteTaskMutation();
-
+  const attachment = task?.attachment as ITaskAttachment;
   const handleDelete = async () => {
     try {
       await deleteTask(task._id as string).unwrap();
@@ -52,6 +57,8 @@ function Task({ task, className }: Props) {
       toast.error(error?.data?.message ?? "Something went wrong");
     }
   };
+
+  console.log(attachment);
 
   return (
     <div
@@ -118,6 +125,7 @@ function Task({ task, className }: Props) {
             {task?.status}
           </Badge>
         </div>
+
         <div>
           <Typography variant={"muted"}>Deadline</Typography>
           <div className="bg-red-100 px-2 py-1 rounded flex items-center gap-2">
@@ -128,10 +136,34 @@ function Task({ task, className }: Props) {
           </div>
         </div>
       </div>
+      {attachment?.fileUrl && (
+        <div className="space-y-2">
+          <Typography variant={"muted"}>Attachment</Typography>
+          <div className="w-full h-[200px] overflow-auto">
+            <FilePreview
+              fileUrl={attachment?.fileUrl}
+              mimeType={attachment?.mimeType}
+            />
+          </div>
+          <div className="flex justify-between items-center gap-2">
+            <Typography variant={"muted"} className="flex-1">
+              File Size: {formatFileSize(attachment?.size)}
+            </Typography>
+            <Link
+              target="_blank"
+              to={addHTTPPrefix(attachment?.fileUrl)}
+              className="w-max text-blue-600 hover:underline"
+            >
+              Full Preview
+            </Link>
+          </div>
+        </div>
+      )}
       <Separator />
       <div className="flex items-center justify-between gap-4">
         <MemberLists members={members} />
         <CommentsContainer
+          taskId={task?._id as string}
           taskName={task?.title}
           description={task?.description ?? ""}
           trigger={

@@ -56,10 +56,9 @@ const AddMembersModal = ({ trigger, group }: Props) => {
 
   const onSubmit = async (values: IFormSchema) => {
     try {
-      await updateGroup({
-        members: values.members as any,
-        _id: group?._id,
-      }).unwrap();
+      const formData = new FormData();
+      values.members.forEach((member) => formData.append("members", member));
+      await updateGroup({ id: group._id, body: formData }).unwrap();
       toast.success("Members updated");
       setOpen(false);
     } catch (err: any) {

@@ -1,4 +1,4 @@
-import type { IAPIResponse, IGroup } from "@/types";
+import type { IAPIResponse, IFromUpdateData, IGroup } from "@/types";
 import { apiSlice } from "./api-slice";
 
 export const groupApi = apiSlice.injectEndpoints({
@@ -16,11 +16,11 @@ export const groupApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Group"],
     }),
 
-    updateGroup: builder.mutation<IGroup, Partial<IGroup>>({
-      query: (group) => ({
-        url: `/group/${group._id}`,
+    updateGroup: builder.mutation<IGroup, IFromUpdateData>({
+      query: ({ id, body }) => ({
+        url: `/group/${id}`,
         method: "PATCH",
-        body: group,
+        body,
       }),
       invalidatesTags: ["Group"],
     }),

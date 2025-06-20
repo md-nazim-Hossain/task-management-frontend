@@ -26,6 +26,7 @@ function User({ user, className, totalUsers }: Props) {
       toast.error(error?.data?.message ?? "Something went wrong");
     }
   };
+
   return (
     <div
       className={cn(

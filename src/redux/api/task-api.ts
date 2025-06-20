@@ -1,12 +1,17 @@
 // src/redux/api/taskApi.ts
 
-import type { ITask } from "@/types";
+import type { IFromUpdateData, ITask } from "@/types";
 import { apiSlice } from "./api-slice";
 
 export const taskApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTasks: builder.query<ITask[], void>({
       query: () => "/task/all-tasks",
+      providesTags: ["Task"],
+    }),
+
+    getSingleTask: builder.query<ITask, string>({
+      query: (id) => `/task/${id}`,
       providesTags: ["Task"],
     }),
 
@@ -23,11 +28,11 @@ export const taskApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Task", "Project"],
     }),
 
-    updateTask: builder.mutation<ITask, Partial<ITask>>({
-      query: (task) => ({
-        url: `/task/${task._id}`,
+    updateTask: builder.mutation<ITask, IFromUpdateData>({
+      query: ({ id, body }) => ({
+        url: `/task/${id}`,
         method: "PATCH",
-        body: task,
+        body,
       }),
       invalidatesTags: ["Task", "Project"],
     }),
@@ -49,4 +54,5 @@ export const {
   useDeleteTaskMutation,
   useUpdateTaskMutation,
   useCreateTaskMutation,
+  useGetSingleTaskQuery,
 } = taskApi;

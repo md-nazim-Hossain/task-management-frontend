@@ -23,6 +23,7 @@ type Props = {
   style?: React.CSSProperties;
   title: string | React.ReactNode;
   value: number;
+  hideProjectAction?: boolean;
 };
 function Container({
   className,
@@ -32,6 +33,7 @@ function Container({
   project,
   title,
   value,
+  hideProjectAction = false,
 }: Props) {
   const [deleteProject] = useDeleteProjectMutation();
 
@@ -55,44 +57,48 @@ function Container({
           <Typography variant={"h5"} className="capitalize">
             {title}
           </Typography>
-          <Popover>
-            <PopoverTrigger className="p-1 cursor-pointer">
-              <Plus size={20} />
-            </PopoverTrigger>
-            <PopoverContent align="end" className="p-1 w-44">
-              <CreateAndUpdateProject
-                defaultValues={project}
-                isEdit
-                trigger={
-                  <Button
-                    variant={"transparent"}
-                    className="w-full rounded justify-start font-normal"
-                  >
-                    <Edit /> Edit Project
-                  </Button>
-                }
-              />
-              <AlertModal
-                onConfirm={handleDelete}
-                trigger={
-                  <Button
-                    variant={"transparent"}
-                    className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
-                  >
-                    <Trash2 /> Delete Project
-                  </Button>
-                }
-              />
-            </PopoverContent>
-          </Popover>
+          {!hideProjectAction && (
+            <Popover>
+              <PopoverTrigger className="p-1 cursor-pointer">
+                <Plus size={20} />
+              </PopoverTrigger>
+              <PopoverContent align="end" className="p-1 w-44">
+                <CreateAndUpdateProject
+                  defaultValues={project}
+                  isEdit
+                  trigger={
+                    <Button
+                      variant={"transparent"}
+                      className="w-full rounded justify-start font-normal"
+                    >
+                      <Edit /> Edit Project
+                    </Button>
+                  }
+                />
+                <AlertModal
+                  onConfirm={handleDelete}
+                  trigger={
+                    <Button
+                      variant={"transparent"}
+                      className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
+                    >
+                      <Trash2 /> Delete Project
+                    </Button>
+                  }
+                />
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
 
-        <div className="flex items-center justify-between gap-5">
-          <Progress value={value} className="flex-1" />
-          <Typography variant={"muted"} className="w-max">
-            {tasks?.length} Tasks
-          </Typography>
-        </div>
+        {!hideProjectAction && (
+          <div className="flex items-center justify-between gap-5">
+            <Progress value={value} className="flex-1" />
+            <Typography variant={"muted"} className="w-max">
+              {tasks?.length} Tasks
+            </Typography>
+          </div>
+        )}
       </div>
       <div className="space-y-2 pr-1 max-h-[75vh] overflow-y-auto scrollbar">
         {tasks.map((task, index) => render(task, index))}

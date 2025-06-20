@@ -27,11 +27,12 @@ function MyTasks() {
           <Container
             value={0}
             key={status}
+            hideProjectAction
             project={
               {
                 title: "",
                 slug: status,
-                _id: "1",
+                _id: "",
               } as any
             }
             title={status.replace("_", " ")}

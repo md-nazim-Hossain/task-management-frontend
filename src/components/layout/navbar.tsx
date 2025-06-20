@@ -22,6 +22,7 @@ import type { RootState } from "@/redux/store";
 import { useLogOutMutation } from "@/redux/api/auth-api";
 import { toast } from "sonner";
 import { setUser } from "@/redux/slices/auth-slice";
+import Notifications from "../shared/notifications";
 function Navbar() {
   const dispatch = useDispatch();
   const { open, isMobile } = useSidebar();
@@ -80,6 +81,7 @@ function Navbar() {
             }
           />
         )}
+        <Notifications />
         <Popover>
           <PopoverTrigger asChild className="cursor-pointer">
             <div className="flex items-center gap-2">

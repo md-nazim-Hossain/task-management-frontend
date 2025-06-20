@@ -113,3 +113,15 @@ export type IFromUpdateData = {
   id: string;
   body: FormData;
 };
+
+export type INotification = {
+  _id: string;
+  sender: IUser;
+  receiver: IUser;
+  message: string;
+  notificationType: string;
+  isRead: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  task: ITask;
+};

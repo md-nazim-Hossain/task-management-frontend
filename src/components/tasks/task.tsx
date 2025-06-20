@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import MemberLists from "../shared/member-list";
 
 type Props = {
-  task: ITask;
+  task: ITask & { commentsCount: number };
   className?: string;
 };
 function Task({ task, className }: Props) {
@@ -139,7 +139,7 @@ function Task({ task, className }: Props) {
               className="text-blue-800 cursor-pointer hover:underline"
               variant={"h6"}
             >
-              3 Comments
+              {task?.commentsCount} Comments
             </Typography>
           }
         />

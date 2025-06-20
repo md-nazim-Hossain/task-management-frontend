@@ -4,7 +4,17 @@ import { apiSlice } from "./api-slice";
 export const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUsers: builder.query<IAPIResponse<IUser[]>, void>({
-      query: () => "/user",
+      query: (params: any) => {
+        const query = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            query.append(key, String(value)); // ensure value is string
+          }
+        });
+
+        return `/user?${query.toString()}`;
+      },
+
       providesTags: ["User"],
     }),
 

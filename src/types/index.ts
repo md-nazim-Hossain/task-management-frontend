@@ -60,7 +60,7 @@ export type IGroup = {
   title: string;
   description?: string;
   image?: string;
-  creator: Pick<IUser, "_id" | "fullName" | "email">;
+  creator: Pick<IUser, "_id" | "fullName" | "email" | "profileImage">;
   members: Array<Pick<IUser, "_id" | "fullName" | "email" | "profileImage">>;
   status: boolean;
   createdAt?: Date;

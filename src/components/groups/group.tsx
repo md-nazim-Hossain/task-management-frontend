@@ -11,11 +11,11 @@ import { Edit, EllipsisVertical, Plus, Trash2 } from "lucide-react";
 import CreateAndUpdateGroup from "./create-and-update-group";
 import AlertModal from "@/components/shared/alert-modal";
 import CustomAvatarImage from "@/components/shared/custom-avatar-image";
-import avatar from "@/assets/images/avatar.png";
 import { format } from "date-fns";
 import { useDeleteGroupMutation } from "@/redux/api/group-api";
 import { toast } from "sonner";
 import MemberLists from "../shared/member-list";
+import AddMembersModal from "../shared/add-member-modal";
 
 type Props = {
   className?: string;
@@ -48,7 +48,7 @@ function Group({ group, className }: Props) {
           <CustomAvatarImage
             name={group?.title}
             alt={group?.title}
-            src={avatar}
+            src={group?.image ?? ""}
             className="size-6"
           />
           <Typography variant={"h5"}>{group?.title}</Typography>
@@ -58,13 +58,19 @@ function Group({ group, className }: Props) {
             <EllipsisVertical size={16} />
           </PopoverTrigger>
           <PopoverContent align="end" className="p-1 w-44">
-            <Button
-              variant={"transparent"}
-              className="w-full rounded justify-start font-normal"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Members
-            </Button>
+            <AddMembersModal
+              group={group}
+              trigger={
+                <Button
+                  variant={"transparent"}
+                  className="w-full rounded justify-start font-normal"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Members
+                </Button>
+              }
+            />
+
             <CreateAndUpdateGroup
               defaultValues={group}
               isEdit
@@ -111,7 +117,7 @@ function Group({ group, className }: Props) {
           <CustomAvatarImage
             name={group?.creator?.fullName}
             alt={group?.creator?.fullName}
-            src={avatar}
+            src={group?.creator?.profileImage ?? ""}
             className="size-6 rounded-full"
           />
           <span>{group?.creator?.fullName}</span>

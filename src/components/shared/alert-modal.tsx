@@ -19,7 +19,9 @@ type Props = {
 function AlertModal({ trigger, title, description, onConfirm }: Props) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="w-full">{trigger}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild className="w-full">
+        {trigger}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

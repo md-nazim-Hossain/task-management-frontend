@@ -30,7 +30,7 @@ function CustomAvatarImage({
       )}
     >
       {(error || !src) && (
-        <div className="absolute p-0.5 w-full h-full rounded z-10 inset-0 bg-slate-200 dark:bg-slate-500 flex justify-center items-center uppercase">
+        <div className="absolute text-xs p-0.5 w-full h-full rounded z-10 inset-0 bg-slate-200 dark:bg-slate-500 flex justify-center items-center uppercase">
           {name
             ? `${name[0]}${name?.split(" ")?.[1]?.[0] ?? name?.at(-1)}`
             : "CB"}

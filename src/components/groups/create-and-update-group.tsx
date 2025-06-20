@@ -31,10 +31,6 @@ import {
   useUpdateGroupMutation,
 } from "@/redux/api/group-api";
 import { useState } from "react";
-const USERS = [
-  { id: "123e4567-e89b-12d3-a456-426614174000", name: "John Doe" },
-  { id: "123e4567-e89b-12d3-a456-426614174001", name: "Jane Smith" },
-];
 
 type Props = {
   trigger: React.ReactNode;
@@ -95,55 +91,6 @@ function CreateAndUpdateGroup({ trigger, isEdit, defaultValues }: Props) {
                   <FormControl>
                     <Input placeholder="Enter group name" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="members"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Add Members</FormLabel>
-                  <div className="grid grid-cols-3 gap-2">
-                    {USERS.map((item) => (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name="members"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={item.id}
-                              className="flex flex-row items-center gap-2"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(item.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...(field.value || []),
-                                          item.id,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== item.id
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-sm font-normal">
-                                {item.name}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                  </div>
                   <FormMessage />
                 </FormItem>
               )}

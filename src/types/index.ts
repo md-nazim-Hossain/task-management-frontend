@@ -20,6 +20,7 @@ export type IProject = {
   status: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  completedTasksCount?: number;
 };
 
 export type ITaskAttachment = {

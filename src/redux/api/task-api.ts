@@ -25,7 +25,7 @@ export const taskApi = apiSlice.injectEndpoints({
         url: `/task/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Task", "Project"],
+      invalidatesTags: ["Task", "Project", "SingleProject"],
     }),
 
     updateTask: builder.mutation<ITask, IFromUpdateData>({
@@ -34,7 +34,7 @@ export const taskApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Task", "Project"],
+      invalidatesTags: ["Task", "Project", "SingleProject"],
     }),
 
     createTask: builder.mutation<ITask, Partial<ITask>>({
@@ -43,7 +43,7 @@ export const taskApi = apiSlice.injectEndpoints({
         method: "POST",
         body: task,
       }),
-      invalidatesTags: ["Task", "Project"],
+      invalidatesTags: ["Task", "Project", "SingleProject"],
     }),
   }),
 });

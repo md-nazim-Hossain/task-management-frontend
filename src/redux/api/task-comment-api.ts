@@ -15,7 +15,7 @@ export const taskCommentApi = apiSlice.injectEndpoints({
         url: `/task-comment/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Comment", "Task", "Project"],
+      invalidatesTags: ["Comment", "Task", "Project", "SingleProject"],
     }),
 
     updateTaskComment: builder.mutation<ITaskComment, Partial<ITaskComment>>({
@@ -33,7 +33,7 @@ export const taskCommentApi = apiSlice.injectEndpoints({
         method: "POST",
         body: comment,
       }),
-      invalidatesTags: ["Comment", "Task", "Project"],
+      invalidatesTags: ["Comment", "Task", "Project", "SingleProject"],
     }),
   }),
 });

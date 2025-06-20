@@ -31,7 +31,7 @@ import { Link } from "react-router";
 import { addHTTPPrefix } from "@/utils/image-loader";
 
 type Props = {
-  task: ITask & { commentsCount: number };
+  task: ITask & { commentsCount?: number };
   className?: string;
 };
 function Task({ task, className }: Props) {
@@ -57,8 +57,6 @@ function Task({ task, className }: Props) {
       toast.error(error?.data?.message ?? "Something went wrong");
     }
   };
-
-  console.log(attachment);
 
   return (
     <div

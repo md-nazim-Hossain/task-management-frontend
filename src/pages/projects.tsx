@@ -15,10 +15,16 @@ function Projects() {
       </div>
     );
   const projects = data?.data || [];
+
   return (
     <div className="flex flex-wrap gap-4">
       {projects.map((project, index) => (
         <Container
+          value={
+            ((project?.completedTasksCount || 0) /
+              (project?.tasks || [])?.length) *
+            100
+          }
           project={project}
           className="flex-grow"
           title={

@@ -7,6 +7,18 @@ export const projectApi = apiSlice.injectEndpoints({
       query: () => "/category",
       providesTags: ["Project"],
     }),
+    getSingleProject: builder.query<IAPIResponse<IProject[]>, void>({
+      query: (params: any) => {
+        const query = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            query.append(key, String(value));
+          }
+        });
+        return `/category?${query.toString()}`;
+      },
+      providesTags: ["SingleProject"],
+    }),
 
     deleteProject: builder.mutation<IProject, string>({
       query: (id) => ({
@@ -41,4 +53,5 @@ export const {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
   useCreateProjectMutation,
+  useGetSingleProjectQuery,
 } = projectApi;

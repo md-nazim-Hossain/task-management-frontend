@@ -19,7 +19,7 @@ function Projects() {
     <div className="flex flex-wrap gap-4">
       {projects.map((project, index) => (
         <Container
-          projectId={project._id}
+          project={project}
           className="flex-grow"
           title={
             <Link

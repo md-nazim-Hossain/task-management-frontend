@@ -1,27 +1,21 @@
-import { ENUM_TASK_STATUS, type ITask } from "@/types";
+import { ENUM_TASK_STATUS, type IProject, type ITask } from "@/types";
 import { cn } from "@/lib/utils";
 import { Typography } from "@/components/ui/typography";
 import { Plus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import CreateAndUpdateTask from "../tasks/create-and-update-task";
+import CreateAndUpdateProject from "../projects/create-and-update-project";
 
 type Props = {
   className?: string;
-  title: string | React.ReactNode;
+  project: IProject;
   tasks: Array<ITask>;
   render: (task: ITask, index: number) => React.ReactNode;
   style?: React.CSSProperties;
-  projectId: string;
+  title: string | React.ReactNode;
 };
-function Container({
-  className,
-  tasks,
-  title,
-  render,
-  style,
-  projectId,
-}: Props) {
+function Container({ className, tasks, render, style, project, title }: Props) {
   return (
     <div
       style={style}
@@ -35,8 +29,9 @@ function Container({
           <Typography variant={"h5"} className="capitalize">
             {title}
           </Typography>
-          <CreateAndUpdateTask
-            projectId={projectId}
+          <CreateAndUpdateProject
+            defaultValues={project}
+            isEdit
             trigger={<Plus size={20} />}
           />
         </div>
@@ -60,7 +55,7 @@ function Container({
         {tasks.map((task, index) => render(task, index))}
       </div>
       <CreateAndUpdateTask
-        projectId={projectId}
+        projectId={project._id}
         trigger={
           <Button
             variant={"transparent"}

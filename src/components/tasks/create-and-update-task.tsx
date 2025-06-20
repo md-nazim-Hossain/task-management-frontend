@@ -29,7 +29,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ENUM_TASK_PRIORITY } from "@/types";
+import {
+  ENUM_TASK_PRIORITY,
+  ENUM_TASK_STATUS,
+  type IProject,
+  type ITask,
+  type ITaskAttachment,
+} from "@/types";
 import {
   Popover,
   PopoverContent,
@@ -41,7 +47,10 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateTaskMutation } from "@/redux/api/task-api";
+import {
+  useCreateTaskMutation,
+  useUpdateTaskMutation,
+} from "@/redux/api/task-api";
 import { toast } from "sonner";
 import { useState } from "react";
 import AllProjects from "../projects/all-projects";
@@ -53,31 +62,45 @@ const USERS = [
 type Props = {
   trigger: React.ReactNode;
   projectId: string;
+  defaultValues?: Partial<ITask>;
+  isEdit?: boolean;
 };
 
-function CreateAndUpdateTask({ trigger, projectId }: Props) {
+function CreateAndUpdateTask({
+  trigger,
+  projectId,
+  defaultValues,
+  isEdit,
+}: Props) {
   const [open, setOpen] = useState(false);
   const form = useForm<ICreateAndUpdateTaskSchema>({
     resolver: zodResolver(createAndUpdateTaskSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      dueDate: "",
-      priority: ENUM_TASK_PRIORITY.LOW,
-      category: projectId,
-      attachment: undefined,
+      title: defaultValues?.title ?? "",
+      description: defaultValues?.description ?? "",
+      dueDate: defaultValues?.dueDate ?? "",
+      priority: defaultValues?.priority ?? ENUM_TASK_PRIORITY.LOW,
+      category: (defaultValues?.category as IProject)?._id ?? projectId,
+      attachment: (defaultValues?.attachment as ITaskAttachment) ?? undefined,
+      status: defaultValues?.status ?? ENUM_TASK_STATUS.TODO,
     },
   });
 
   const [createTask] = useCreateTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
 
   async function onSubmit(data: ICreateAndUpdateTaskSchema) {
     try {
-      await createTask({
-        ...data,
-        category: projectId,
-      }).unwrap();
-      toast.success("Tak created successfully");
+      if (isEdit) {
+        await updateTask({ ...data, _id: defaultValues?._id }).unwrap();
+        toast.success("Task updated successfully");
+      } else {
+        await createTask({
+          ...data,
+          category: projectId,
+        }).unwrap();
+        toast.success("Tak created successfully");
+      }
       form.reset();
       setOpen(false);
     } catch (error: any) {
@@ -93,7 +116,7 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-2xl">
         <DialogHeader className="border-b pb-4">
-          <DialogTitle>Create New Task</DialogTitle>
+          <DialogTitle>{isEdit ? "Update" : "Create New"} Task</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -122,7 +145,7 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full capitalize">
                           <SelectValue placeholder="Select a priority" />
                         </SelectTrigger>
                       </FormControl>
@@ -133,7 +156,7 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
                             value={priority}
                             className="capitalize"
                           >
-                            {priority.toLowerCase()}
+                            {priority}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -209,7 +232,7 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
                             size="lg"
                             variant="outline"
                             className={cn(
-                              "w-full pl-3 text-left font-normal",
+                              "w-full pl-3 text-sm text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -244,6 +267,58 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-5">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full capitalize">
+                          <SelectValue placeholder="Select a status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(ENUM_TASK_STATUS).map((status) => (
+                          <SelectItem
+                            key={status}
+                            value={status}
+                            className="capitalize"
+                          >
+                            {status}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="attachment"
+                render={({ field: { onChange } }) => (
+                  <FormItem>
+                    <FormLabel>Attachment</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        onChange={(e) =>
+                          onChange(e.target.files?.[0] || undefined)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="description"
@@ -261,31 +336,12 @@ function CreateAndUpdateTask({ trigger, projectId }: Props) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="attachment"
-              render={({ field: { onChange } }) => (
-                <FormItem>
-                  <FormLabel>Attachment</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      onChange={(e) =>
-                        onChange(e.target.files?.[0] || undefined)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <DialogFooter>
               <FormSubmitButton
                 loading={form.formState.isSubmitting}
-                loadingText="Submitting..."
+                loadingText={isEdit ? "Updating..." : "Creating..."}
               >
-                Submit
+                {isEdit ? "Update" : "Create"}
               </FormSubmitButton>
             </DialogFooter>
           </form>

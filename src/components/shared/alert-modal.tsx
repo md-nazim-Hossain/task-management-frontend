@@ -14,8 +14,9 @@ type Props = {
   trigger: React.ReactNode;
   title?: string;
   description?: string;
+  onConfirm: () => void;
 };
-function AlertModal({ trigger, title, description }: Props) {
+function AlertModal({ trigger, title, description, onConfirm }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger className="w-full">{trigger}</AlertDialogTrigger>
@@ -32,7 +33,7 @@ function AlertModal({ trigger, title, description }: Props) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -1,4 +1,4 @@
-import { ENUM_TASK_PRIORITY } from "@/types";
+import { ENUM_TASK_PRIORITY, ENUM_TASK_STATUS } from "@/types";
 import z from "zod";
 const loginSchema = z.object({
   email: z.string().email(),
@@ -12,7 +12,7 @@ const createAndUpdateProjectSchema = z.object({
 
 const createAndUpdateTaskSchema = z.object({
   title: z.string().min(3, "Name must be at least 3 characters long"),
-  description: z.string().optional(),
+  description: z.string().min(3, "Description is required"),
   dueDate: z
     .string()
     .datetime({ message: "Invalid date format, expected ISO 8601" }),
@@ -24,7 +24,16 @@ const createAndUpdateTaskSchema = z.object({
   ),
   assignedTo: z.string().optional(),
   category: z.string().min(1, "Project cannot be empty"),
-  attachment: z.instanceof(File).optional(),
+  attachment: z.any().optional(),
+  status: z
+    .enum(
+      Object.values(ENUM_TASK_STATUS) as [
+        ENUM_TASK_STATUS,
+        ...ENUM_TASK_STATUS[]
+      ]
+    )
+    .default(ENUM_TASK_STATUS.TODO)
+    .optional(),
 });
 
 const createAndUpdateGroupSchema = z.object({

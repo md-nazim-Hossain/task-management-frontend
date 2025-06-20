@@ -1,7 +1,6 @@
 import {
   ENUM_TASK_PRIORITY,
   ENUM_TASK_STATUS,
-  type IProject,
   type ITask,
   type IUser,
 } from "@/types";
@@ -22,6 +21,9 @@ import {
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/shared/alert-modal";
 import CommentsContainer from "../comments/comments-container";
+import { useDeleteTaskMutation } from "@/redux/api/task-api";
+import { toast } from "sonner";
+
 type Props = {
   task: ITask;
   className?: string;
@@ -36,8 +38,18 @@ function Task({ task, className }: Props) {
 
   const projectId = task?.category as string;
   const creator = task?.creator as IUser;
+  const [deleteTask] = useDeleteTaskMutation();
 
   console.log(task);
+
+  const handleDelete = async () => {
+    try {
+      await deleteTask(task._id as string).unwrap();
+      toast.success("Task deleted successfully");
+    } catch (error: any) {
+      toast.error(error?.data?.message ?? "Something went wrong");
+    }
+  };
 
   return (
     <div
@@ -55,6 +67,8 @@ function Task({ task, className }: Props) {
           <PopoverContent align="end" className="p-1 w-44">
             <CreateAndUpdateTask
               projectId={projectId}
+              defaultValues={task}
+              isEdit
               trigger={
                 <Button
                   variant={"transparent"}
@@ -65,6 +79,7 @@ function Task({ task, className }: Props) {
               }
             />
             <AlertModal
+              onConfirm={handleDelete}
               trigger={
                 <Button
                   variant={"transparent"}

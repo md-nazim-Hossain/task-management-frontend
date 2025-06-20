@@ -32,7 +32,7 @@ function LoginPage() {
       if (!res?.data) throw new Error("Something went wrong");
       const { user } = res?.data || {};
       dispatch(setUser(user || null));
-      navigate("/dashboard");
+      navigate("/");
       toast.success("Login successful");
     } catch (error: any) {
       toast.error(error?.data?.message ?? "Something went wrong");

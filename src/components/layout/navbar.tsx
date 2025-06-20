@@ -52,8 +52,7 @@ function Navbar() {
     >
       <SidebarTrigger />
       <div className="flex items-center gap-5">
-        {(pathname === "/dashboard" ||
-          pathname.startsWith("/dashboard/projects")) && (
+        {(pathname === "/" || pathname.startsWith("/projects")) && (
           <CreateAndUpdateProject
             trigger={
               <Button>
@@ -63,7 +62,7 @@ function Navbar() {
           />
         )}
 
-        {pathname.startsWith("/dashboard/groups") && (
+        {pathname.startsWith("/groups") && (
           <CreateAndUpdateGroup
             trigger={
               <Button>
@@ -72,7 +71,7 @@ function Navbar() {
             }
           />
         )}
-        {pathname.startsWith("/dashboard/users") && (
+        {pathname.startsWith("/users") && (
           <CreateAndUpdateUser
             trigger={
               <Button>

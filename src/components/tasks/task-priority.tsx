@@ -1,4 +1,3 @@
-import React from "react";
 import low from "@/assets/images/low.png";
 import medium from "@/assets/images/medium.png";
 import high from "@/assets/images/high.png";

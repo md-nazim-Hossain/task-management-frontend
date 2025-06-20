@@ -44,7 +44,7 @@ function App() {
   return (
     <Routes>
       <Route
-        path="/dashboard"
+        path="/"
         element={
           <PrivateRoute>
             <DashboardLayout />

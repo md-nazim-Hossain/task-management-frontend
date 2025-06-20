@@ -13,27 +13,27 @@ export const AppSidebar: React.FC = () => {
   const sidebar = [
     {
       name: "Home",
-      href: "/dashboard",
+      href: "/",
       icon: <Home size={20} />,
     },
     {
       name: "All Projects",
-      href: "/dashboard/projects",
+      href: "/projects",
       icon: <Trees size={20} />,
     },
     {
       name: "Groups",
-      href: "/dashboard/groups",
+      href: "/groups",
       icon: <Group size={20} />,
     },
     {
       name: "Users",
-      href: "/dashboard/users",
+      href: "/users",
       icon: <User size={20} />,
     },
     {
       name: "My Tasks",
-      href: "/dashboard/my-tasks",
+      href: "/my-tasks",
       icon: <List size={20} />,
     },
   ];

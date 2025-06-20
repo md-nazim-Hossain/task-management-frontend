@@ -30,7 +30,7 @@ function Projects() {
           title={
             <Link
               className="cursor-pointer hover:underline"
-              to={`/dashboard/projects/${project.slug}`}
+              to={`/projects/${project.slug}`}
             >
               {project.title}
             </Link>

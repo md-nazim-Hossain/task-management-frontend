@@ -30,12 +30,15 @@ import FilePreview from "../shared/file-preview";
 import { formatFileSize } from "@/utils/file-size";
 import { Link } from "react-router";
 import { addHTTPPrefix } from "@/utils/image-loader";
+import type { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   task: ITask & { commentsCount?: number };
   className?: string;
 };
 function Task({ task, className }: Props) {
+  const user = useSelector((state: RootState) => state.auth.user);
   const status =
     task?.status === ENUM_TASK_STATUS.IN_PROGRESS
       ? "progress"
@@ -86,17 +89,19 @@ function Task({ task, className }: Props) {
                 </Button>
               }
             />
-            <AlertModal
-              onConfirm={handleDelete}
-              trigger={
-                <Button
-                  variant={"transparent"}
-                  className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
-                >
-                  <Trash2 /> Delete Task
-                </Button>
-              }
-            />
+            {user?._id === task?.creator._id && (
+              <AlertModal
+                onConfirm={handleDelete}
+                trigger={
+                  <Button
+                    variant={"transparent"}
+                    className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
+                  >
+                    <Trash2 /> Delete Task
+                  </Button>
+                }
+              />
+            )}
           </PopoverContent>
         </Popover>
       </div>

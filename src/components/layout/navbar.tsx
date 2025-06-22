@@ -22,7 +22,7 @@ import type { RootState } from "@/redux/store";
 import { useLogOutMutation } from "@/redux/api/auth-api";
 import { toast } from "sonner";
 import { setUser } from "@/redux/slices/auth-slice";
-import Notifications from "../shared/notifications";
+import Notifications from "../notification/notifications";
 function Navbar() {
   const dispatch = useDispatch();
   const { open, isMobile } = useSidebar();

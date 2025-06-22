@@ -12,7 +12,14 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ["Me"],
+      invalidatesTags: [
+        "Me",
+        "User",
+        "Project",
+        "Task",
+        "Group",
+        "Notification",
+      ],
     }),
     getMe: builder.query<IAPIResponse<IUser>, void>({
       query: () => "/user/my-profile",

@@ -10,13 +10,16 @@ import { Separator } from "../ui/separator";
 import AlertModal from "../shared/alert-modal";
 import { useDeleteUserMutation } from "@/redux/api/user-api";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 type Props = {
   user: IUser;
   className?: string;
-  totalUsers: number;
 };
-function User({ user, className, totalUsers }: Props) {
+function User({ user, className }: Props) {
+  const loginUser = useSelector((state: any) => state.auth.user);
+  const itsMe = loginUser?._id === user._id;
+  const itsCreator = loginUser?._id === user?.creator && user?.creator;
   const [deleteUser] = useDeleteUserMutation();
   const handleDelete = async () => {
     try {
@@ -46,28 +49,34 @@ function User({ user, className, totalUsers }: Props) {
         <Badge variant={user?.status ? "success" : "destructive"}>
           {user?.status ? "Active" : "Inactive"}
         </Badge>
-        <Separator className="my-2" />
-        <div className="flex items-center gap-2">
-          <CreateAndUpdateUser
-            defaultValues={user}
-            isEdit
-            trigger={
-              <Button size={"icon"}>
-                <Edit />
-              </Button>
-            }
-          />
-          {totalUsers > 1 && (
-            <AlertModal
-              onConfirm={handleDelete}
-              trigger={
-                <Button variant={"destructive"} size={"icon"}>
-                  <Trash2 />
-                </Button>
-              }
-            />
-          )}
-        </div>
+        {(itsCreator || itsMe) && (
+          <>
+            <Separator className="my-2" />
+            <div className="flex items-center gap-2">
+              {(itsMe || itsCreator) && (
+                <CreateAndUpdateUser
+                  defaultValues={user}
+                  isEdit
+                  trigger={
+                    <Button size={"icon"}>
+                      <Edit />
+                    </Button>
+                  }
+                />
+              )}
+              {itsCreator && (
+                <AlertModal
+                  onConfirm={handleDelete}
+                  trigger={
+                    <Button variant={"destructive"} size={"icon"}>
+                      <Trash2 />
+                    </Button>
+                  }
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

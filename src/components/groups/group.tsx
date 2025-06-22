@@ -16,6 +16,8 @@ import { useDeleteGroupMutation } from "@/redux/api/group-api";
 import { toast } from "sonner";
 import MemberLists from "../shared/member-list";
 import AddMembersModal from "../shared/add-member-modal";
+import type { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   className?: string;
@@ -25,7 +27,7 @@ type Props = {
 function Group({ group, className }: Props) {
   const members = group?.members || [];
   const [deleteGroup] = useDeleteGroupMutation();
-
+  const user = useSelector((state: RootState) => state.auth.user);
   const handleDeleteGroup = async () => {
     try {
       await deleteGroup(group._id as string).unwrap();
@@ -53,51 +55,53 @@ function Group({ group, className }: Props) {
           />
           <Typography variant={"h5"}>{group?.title}</Typography>
         </div>
-        <Popover>
-          <PopoverTrigger className="p-1 cursor-pointer">
-            <EllipsisVertical size={16} />
-          </PopoverTrigger>
-          <PopoverContent align="end" className="p-1 w-44">
-            <AddMembersModal
-              group={group}
-              trigger={
-                <Button
-                  variant={"transparent"}
-                  className="w-full rounded justify-start font-normal"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Members
-                </Button>
-              }
-            />
+        {user?._id === group?.creator._id && (
+          <Popover>
+            <PopoverTrigger className="p-1 cursor-pointer">
+              <EllipsisVertical size={16} />
+            </PopoverTrigger>
+            <PopoverContent align="end" className="p-1 w-44">
+              <AddMembersModal
+                group={group}
+                trigger={
+                  <Button
+                    variant={"transparent"}
+                    className="w-full rounded justify-start font-normal"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Members
+                  </Button>
+                }
+              />
 
-            <CreateAndUpdateGroup
-              defaultValues={group}
-              isEdit
-              trigger={
-                <Button
-                  variant={"transparent"}
-                  className="w-full rounded justify-start font-normal"
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit Group
-                </Button>
-              }
-            />
-            <AlertModal
-              onConfirm={handleDeleteGroup}
-              trigger={
-                <Button
-                  variant={"transparent"}
-                  className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Group
-                </Button>
-              }
-            />
-          </PopoverContent>
-        </Popover>
+              <CreateAndUpdateGroup
+                defaultValues={group}
+                isEdit
+                trigger={
+                  <Button
+                    variant={"transparent"}
+                    className="w-full rounded justify-start font-normal"
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit Group
+                  </Button>
+                }
+              />
+              <AlertModal
+                onConfirm={handleDeleteGroup}
+                trigger={
+                  <Button
+                    variant={"transparent"}
+                    className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Group
+                  </Button>
+                }
+              />
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
 
       {/* Description */}

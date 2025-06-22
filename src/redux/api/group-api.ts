@@ -8,6 +8,11 @@ export const groupApi = apiSlice.injectEndpoints({
       providesTags: ["Group"],
     }),
 
+    getMyGroups: builder.query<IAPIResponse<IGroup[]>, void>({
+      query: () => "/group/my-groups",
+      providesTags: ["Group"],
+    }),
+
     deleteGroup: builder.mutation<IGroup, string>({
       query: (id) => ({
         url: `/group/${id}`,
@@ -41,4 +46,5 @@ export const {
   useDeleteGroupMutation,
   useUpdateGroupMutation,
   useCreateGroupMutation,
+  useGetMyGroupsQuery,
 } = groupApi;

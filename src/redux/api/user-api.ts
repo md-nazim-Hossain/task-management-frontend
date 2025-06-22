@@ -18,6 +18,11 @@ export const userApi = apiSlice.injectEndpoints({
       providesTags: ["User"],
     }),
 
+    getMyUsers: builder.query<IAPIResponse<IUser[]>, void>({
+      query: () => "/user/my-users",
+      providesTags: ["User"],
+    }),
+
     deleteUser: builder.mutation<IUser, string>({
       query: (id) => ({
         url: `/user/${id}`,
@@ -51,4 +56,5 @@ export const {
   useDeleteUserMutation,
   useUpdateUserMutation,
   useCreateUserMutation,
+  useGetMyUsersQuery,
 } = userApi;

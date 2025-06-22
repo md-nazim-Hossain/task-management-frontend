@@ -6,6 +6,7 @@ export type IUser = {
   status: boolean;
   passwordChangeAt?: Date;
   profileImage?: string;
+  creator?: Pick<IUser, "_id" | "fullName" | "email" | "profileImage">;
   password: string;
   createdAt?: Date;
   updatedAt?: Date;

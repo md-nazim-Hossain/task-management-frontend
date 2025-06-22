@@ -1,9 +1,9 @@
 import Group from "@/components/groups/group";
 import GroupSkeleton from "@/components/groups/group-skeleton";
-import { useGetGroupsQuery } from "@/redux/api/group-api";
+import { useGetMyGroupsQuery } from "@/redux/api/group-api";
 
 function Groups() {
-  const { data, isLoading } = useGetGroupsQuery();
+  const { data, isLoading } = useGetMyGroupsQuery();
   if (isLoading)
     return (
       <div className="flex flex-wrap gap-4">

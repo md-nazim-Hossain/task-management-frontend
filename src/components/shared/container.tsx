@@ -14,6 +14,8 @@ import {
 import AlertModal from "./alert-modal";
 import { useDeleteProjectMutation } from "@/redux/api/project-api";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 
 type Props = {
   className?: string;
@@ -35,6 +37,7 @@ function Container({
   value,
   hideProjectAction = false,
 }: Props) {
+  const user = useSelector((state: RootState) => state.auth.user);
   const [deleteProject] = useDeleteProjectMutation();
 
   const handleDelete = async () => {
@@ -47,46 +50,45 @@ function Container({
   return (
     <div
       style={style}
-      className={cn(
-        "p-3 h-max min-w-sm rounded-lg bg-blue-100 space-y-4 max-w-md",
-        className
-      )}
+      className={cn("p-3 rounded-lg bg-blue-100 space-y-4", className)}
     >
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Typography variant={"h5"} className="capitalize">
             {title}
           </Typography>
-          {!hideProjectAction && (
+          {!hideProjectAction && user?._id === project?.creator?._id && (
             <Popover>
               <PopoverTrigger className="p-1 cursor-pointer">
                 <Plus size={20} />
               </PopoverTrigger>
-              <PopoverContent align="end" className="p-1 w-44">
-                <CreateAndUpdateProject
-                  defaultValues={project}
-                  isEdit
-                  trigger={
-                    <Button
-                      variant={"transparent"}
-                      className="w-full rounded justify-start font-normal"
-                    >
-                      <Edit /> Edit Project
-                    </Button>
-                  }
-                />
-                <AlertModal
-                  onConfirm={handleDelete}
-                  trigger={
-                    <Button
-                      variant={"transparent"}
-                      className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
-                    >
-                      <Trash2 /> Delete Project
-                    </Button>
-                  }
-                />
-              </PopoverContent>
+              {user?._id === project?.creator?._id && (
+                <PopoverContent align="end" className="p-1 w-44">
+                  <CreateAndUpdateProject
+                    defaultValues={project}
+                    isEdit
+                    trigger={
+                      <Button
+                        variant="transparent"
+                        className="w-full rounded justify-start font-normal"
+                      >
+                        <Edit /> Edit Project
+                      </Button>
+                    }
+                  />
+                  <AlertModal
+                    onConfirm={handleDelete}
+                    trigger={
+                      <Button
+                        variant="transparent"
+                        className="w-full rounded hover:bg-destructive/10 hover:text-destructive text-destructive justify-start font-normal"
+                      >
+                        <Trash2 /> Delete Project
+                      </Button>
+                    }
+                  />
+                </PopoverContent>
+              )}
             </Popover>
           )}
         </div>

@@ -1,9 +1,9 @@
 import User from "@/components/users/user";
 import UserSkeleton from "@/components/users/user-skeleton";
-import { useGetUsersQuery } from "@/redux/api/user-api";
+import { useGetMyUsersQuery } from "@/redux/api/user-api";
 
 function Users() {
-  const { data, isLoading } = useGetUsersQuery();
+  const { data, isLoading } = useGetMyUsersQuery();
   if (isLoading)
     return (
       <div className="flex flex-wrap gap-4">
@@ -16,7 +16,7 @@ function Users() {
   return (
     <div className="flex flex-wrap gap-4">
       {users.map((user, index) => (
-        <User totalUsers={users.length} user={user} key={index} />
+        <User user={user} key={index} />
       ))}
     </div>
   );

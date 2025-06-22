@@ -26,7 +26,7 @@ function Projects() {
             100
           }
           project={project}
-          className="flex-grow"
+          className="flex-grow min-w-sm max-w-md h-max"
           title={
             <Link
               className="cursor-pointer hover:underline"

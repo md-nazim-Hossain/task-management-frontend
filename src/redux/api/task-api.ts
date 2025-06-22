@@ -34,7 +34,7 @@ export const taskApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Task", "Project", "SingleProject"],
+      invalidatesTags: ["Task", "Project", "SingleProject", "Notification"],
     }),
 
     createTask: builder.mutation<ITask, Partial<ITask>>({

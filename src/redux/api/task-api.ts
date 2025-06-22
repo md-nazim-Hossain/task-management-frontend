@@ -17,7 +17,7 @@ export const taskApi = apiSlice.injectEndpoints({
 
     getMyTasks: builder.query<IAPIResponse<ITask[]>, void>({
       query: () => "/task/my-tasks",
-      providesTags: ["Task"],
+      providesTags: ["MyTasks"],
     }),
 
     deleteTask: builder.mutation<ITask, string>({
@@ -25,7 +25,13 @@ export const taskApi = apiSlice.injectEndpoints({
         url: `/task/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Task", "Project", "SingleProject"],
+      invalidatesTags: [
+        "Task",
+        "Project",
+        "SingleProject",
+        "Notification",
+        "MyTasks",
+      ],
     }),
 
     updateTask: builder.mutation<ITask, IFromUpdateData>({
@@ -34,7 +40,13 @@ export const taskApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Task", "Project", "SingleProject", "Notification"],
+      invalidatesTags: [
+        "Task",
+        "Project",
+        "SingleProject",
+        "Notification",
+        "MyTasks",
+      ],
     }),
 
     createTask: builder.mutation<ITask, Partial<ITask>>({
@@ -43,7 +55,7 @@ export const taskApi = apiSlice.injectEndpoints({
         method: "POST",
         body: task,
       }),
-      invalidatesTags: ["Task", "Project", "SingleProject"],
+      invalidatesTags: ["Task", "Project", "SingleProject", "MyTasks"],
     }),
   }),
 });

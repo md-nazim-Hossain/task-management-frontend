@@ -16,6 +16,8 @@ export const apiSlice = createApi({
     "Auth",
     "Comment",
     "SingleProject",
+    "MyTasks",
+    "Me",
   ],
   endpoints: () => ({}),
 });

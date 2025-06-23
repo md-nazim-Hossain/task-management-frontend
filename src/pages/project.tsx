@@ -83,14 +83,14 @@ const DroppableContext = ({
   return (
     <div
       ref={setNodeRef}
-      className="relative"
+      className="relative flex-grow min-w-sm max-w-md h-max overflow-x-hidden"
       style={{
         ...style,
       }}
     >
       {children}
       {isOver && (
-        <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-20 left-0 w-full h-full">
           <Task task={task} className="opacity-20" />
         </div>
       )}

@@ -39,7 +39,7 @@ function LoginPage() {
     }
   }
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className="w-screen h-screen flex justify-center items-center px-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

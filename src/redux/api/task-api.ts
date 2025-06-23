@@ -15,9 +15,37 @@ export const taskApi = apiSlice.injectEndpoints({
       providesTags: ["Task"],
     }),
 
-    getMyTasks: builder.query<IAPIResponse<ITask[]>, void>({
-      query: () => "/task/my-tasks",
-      providesTags: ["MyTasks"],
+    getMyTasks: builder.query<IAPIResponse<ITask[]>, Record<string, any>>({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams.append(key, v));
+          } else if (value) {
+            searchParams.set(key, String(value));
+          }
+        });
+
+        return `/task/my-tasks?${searchParams.toString()}`;
+      },
+    }),
+
+    getTasksByProject: builder.query<
+      IAPIResponse<ITask[]>,
+      Record<string, any>
+    >({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams.append(key, v));
+          } else if (value) {
+            searchParams.set(key, String(value));
+          }
+        });
+
+        return `/task/get-task-by-category?${searchParams.toString()}`;
+      },
     }),
 
     deleteTask: builder.mutation<ITask, string>({
@@ -67,4 +95,5 @@ export const {
   useUpdateTaskMutation,
   useCreateTaskMutation,
   useGetSingleTaskQuery,
+  useGetTasksByProjectQuery,
 } = taskApi;

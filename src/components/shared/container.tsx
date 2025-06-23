@@ -102,7 +102,7 @@ function Container({
           </div>
         )}
       </div>
-      <div className="space-y-2 pr-1 max-h-[75vh] overflow-y-auto scrollbar">
+      <div className="space-y-2">
         {tasks.map((task, index) => render(task, index))}
       </div>
       <CreateAndUpdateTask

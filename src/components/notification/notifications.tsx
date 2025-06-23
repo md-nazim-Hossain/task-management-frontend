@@ -54,7 +54,7 @@ function Notifications() {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="w-[450px] max-h-[650px] overflow-auto scroll"
+        className="w-[450px] max-h-[650px] overflow-auto scrollbar"
       >
         <Typography variant={"h3"}>Notifications</Typography>
         <Separator className="my-2" />

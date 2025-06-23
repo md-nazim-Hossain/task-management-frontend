@@ -3,8 +3,19 @@ import { apiSlice } from "./api-slice";
 
 export const projectApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProjects: builder.query<IAPIResponse<IProject[]>, void>({
-      query: () => "/category",
+    getProjects: builder.query<IAPIResponse<IProject[]>, Record<string, any>>({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams.append(key, v));
+          } else if (value) {
+            searchParams.set(key, String(value));
+          }
+        });
+
+        return `/category?${searchParams.toString()}`;
+      },
       providesTags: ["Project"],
     }),
     getSingleProject: builder.query<IAPIResponse<IProject[]>, void>({

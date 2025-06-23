@@ -5,9 +5,9 @@ import Navbar from "./navbar";
 
 function DashboardLayout() {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="bg-background">
       <AppSidebar />
-      <main className="bg-background flex-1">
+      <main className="flex-1">
         <Navbar />
         <div className="mt-[60px] p-4">
           <Outlet />

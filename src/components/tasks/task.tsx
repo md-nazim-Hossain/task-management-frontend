@@ -65,7 +65,7 @@ function Task({ task, className }: Props) {
   return (
     <div
       className={cn(
-        "border bg-background rounded-md p-4 min-w-sm space-y-4",
+        "border bg-background rounded-md p-4 sm:min-w-sm space-y-4",
         className
       )}
     >
@@ -106,7 +106,7 @@ function Task({ task, className }: Props) {
         </Popover>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1 flex-1">
+        <div className="space-y-1 col-span-2 sm:col-span-1">
           <Typography variant={"muted"}>People</Typography>
           <div className="bg-blue-100 flex items-center gap-2 rounded">
             <CustomAvatarImage
@@ -130,7 +130,7 @@ function Task({ task, className }: Props) {
           </Badge>
         </div>
 
-        <div>
+        <div className="col-span-2 sm:col-span-1">
           <Typography variant={"muted"}>Deadline</Typography>
           <div className="bg-red-100 px-2 py-1 rounded flex items-center gap-2">
             <Calendar size={16} />

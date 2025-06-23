@@ -142,4 +142,7 @@
   .scrollbar::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground rounded-full;
   }
+  .hide-scrollbar::-webkit-scrollbar {
+    @apply hidden;
+  }
 }

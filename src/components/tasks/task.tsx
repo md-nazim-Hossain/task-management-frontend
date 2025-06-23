@@ -32,12 +32,17 @@ import { Link } from "react-router";
 import { addHTTPPrefix } from "@/utils/image-loader";
 import type { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
   task: ITask & { commentsCount?: number };
   className?: string;
+  id: string;
 };
-function Task({ task, className }: Props) {
+function Task({ task, className, id }: Props) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({ id });
+
   const user = useSelector((state: RootState) => state.auth.user);
   const status =
     task?.status === ENUM_TASK_STATUS.IN_PROGRESS
@@ -64,15 +69,32 @@ function Task({ task, className }: Props) {
 
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{
+        transform: transform
+          ? `translate3d(${transform.x}px, ${transform.y}px, 0) rotate(3deg)`
+          : undefined,
+        transition: isDragging ? "none" : "transform 0.2s ease",
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 50 : 1,
+        cursor: id == "0" ? "default" : isDragging ? "grabbing" : "grab",
+      }}
       className={cn(
         "border bg-background rounded-md p-4 sm:min-w-sm space-y-4",
+        isDragging && "ring-2 ring-primary",
         className
       )}
     >
       <div className="flex items-center justify-between gap-3">
         <Typography variant={"h5"}>{task?.title}</Typography>
         <Popover>
-          <PopoverTrigger className="p-1 cursor-pointer">
+          <PopoverTrigger
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            className="p-1 cursor-pointer"
+          >
             <EllipsisVertical size={16} />
           </PopoverTrigger>
           <PopoverContent align="end" className="p-1 w-44">
@@ -89,7 +111,7 @@ function Task({ task, className }: Props) {
                 </Button>
               }
             />
-            {user?._id === task?.creator._id && (
+            {user?._id === task?.creator?._id && (
               <AlertModal
                 onConfirm={handleDelete}
                 trigger={

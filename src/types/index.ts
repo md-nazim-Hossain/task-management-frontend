@@ -31,7 +31,7 @@ export type ITaskAttachment = {
   size: number;
 };
 export type ITask = {
-  _id?: string;
+  _id: string;
   title: string;
   description: string;
   status?: ENUM_TASK_STATUS;

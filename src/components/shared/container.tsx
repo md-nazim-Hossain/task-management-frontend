@@ -16,6 +16,7 @@ import { useDeleteProjectMutation } from "@/redux/api/project-api";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
+import { useDroppable } from "@dnd-kit/core";
 
 type Props = {
   className?: string;
@@ -26,6 +27,7 @@ type Props = {
   title: string | React.ReactNode;
   value: number;
   hideProjectAction?: boolean;
+  id: string;
 };
 function Container({
   className,
@@ -36,7 +38,9 @@ function Container({
   title,
   value,
   hideProjectAction = false,
+  id,
 }: Props) {
+  const { setNodeRef, isOver, rect, over } = useDroppable({ id });
   const user = useSelector((state: RootState) => state.auth.user);
   const [deleteProject] = useDeleteProjectMutation();
 
@@ -49,8 +53,13 @@ function Container({
   };
   return (
     <div
+      ref={setNodeRef}
       style={style}
-      className={cn("p-3 rounded-lg bg-blue-100 space-y-4", className)}
+      className={cn(
+        "p-3 rounded-lg space-y-4 transition-colors duration-200",
+        isOver ? "bg-blue-100" : "bg-gray-100",
+        className
+      )}
     >
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -102,7 +111,15 @@ function Container({
           </div>
         )}
       </div>
-      <div className="space-y-2">
+      <div
+        style={{
+          minHeight:
+            isOver && over?.rect?.height
+              ? `calc(100% + ${over.rect.height}px + ${rect?.current?.height}px + 30px)`
+              : undefined,
+        }}
+        className="space-y-2 max-h-[90vh] overflow-y-auto scrollbar pr-2"
+      >
         {tasks.map((task, index) => render(task, index))}
       </div>
       <CreateAndUpdateTask

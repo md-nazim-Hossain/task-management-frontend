@@ -29,6 +29,7 @@ function AllProjectsList() {
       {projects.length > 0 &&
         projects.map((project, index) => (
           <Container
+            id={project._id}
             value={
               ((project?.completedTasksCount || 0) /
                 (project?.tasks || [])?.length) *
@@ -46,7 +47,7 @@ function AllProjectsList() {
             }
             key={index}
             tasks={project.tasks || []}
-            render={(task, index) => <Task task={task} key={index} />}
+            render={(task, index) => <Task id={"0"} task={task} key={index} />}
           />
         ))}
     </div>

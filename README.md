@@ -32,6 +32,7 @@ Projectify offers a comprehensive suite of features to streamline your project m
 *   **View and Track Projects:** Access a centralized list of all your projects. Each project entry typically displays:
     *   Status (e.g., "Active", "On Hold", "Completed")
     *   Overall progress percentage
+    *   You can typically click on the project title or a dedicated 'view' button to navigate to the detailed project page where you can see its associated tasks and other details.
 *   **Edit and Delete Projects:** Modify project details as needed or remove projects (permissions may apply).
 *   **Manage Project Members:**
     *   Assign team members to specific projects.
